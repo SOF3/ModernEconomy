@@ -1,0 +1,8 @@
+name: ModernEcon
+version: 0.1.0
+api:
+  - 4.0.0 # Target at 4.0 for features e.g. async events (probably)
+main: ModernPlugins\ModernEcon\Main
+authors:
+  - SOFe
+  - JackMD

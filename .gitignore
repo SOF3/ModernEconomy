@@ -1,0 +1,10 @@
+.idea/*
+!.idea/ModernEcon.iml
+!.idea/fileTemplates
+!.idea/inspectionProfiles
+!.idea/scopes
+!.idea/jsonSchemas.xml
+!.idea/modules.xml
+!.idea/php.xml
+!.idea/watcherTasks.xml
+*.phar

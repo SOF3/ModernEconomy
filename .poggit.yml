@@ -1,0 +1,8 @@
+projects:
+  ModernEcon:
+    path: ModernEcon
+    libs:
+      - src: poggit/libasynql/libasynql
+        version: ^3.2
+      - src: SOFe/await-generator/await-generator
+        version: ^2.2
