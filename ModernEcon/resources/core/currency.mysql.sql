@@ -6,7 +6,8 @@
 CREATE TABLE modernecon_currency (
 	id   INT PRIMARY KEY AUTO_INCREMENT,
 	name VARCHAR(255) UNIQUE
-);
+)
+	CHARACTER SET 'utf8mb4';
 -- #        }
 -- #        { subcurrency
 -- #            * Creates the subcurrency table
