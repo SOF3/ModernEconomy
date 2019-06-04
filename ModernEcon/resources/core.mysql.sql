@@ -7,13 +7,14 @@ CREATE TABLE IF NOT EXISTS modernecon_lock (
 	master       CHAR(16),
 	majorVersion INT,
 	minorVersion INT,
+	config       TEXT,
 	last_update  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 -- #        }
 -- #        { init
 -- #            * Initializes the table to contain exactly one null row with a safe value.
-INSERT INTO modernecon_lock (master, last_update)
-VALUES ('', DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 HOUR));
+INSERT INTO modernecon_lock (master, config, last_update)
+VALUES ('', '', DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY));
 -- #        }
 -- #        { acquire
 -- #            :serverId string
@@ -24,7 +25,7 @@ VALUES ('', DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 HOUR));
 -- #            * `affectedRows == 1` indicates whether the master status is acquired.
 -- #            * If two non-master servers execute this query simultaneously, the first one wins.
 -- #            * This is under the assumption that all queries take way less than 10 seconds.
--- #            * TODO: config synchronization
+-- #            * The configuration is not updated. All servers shall continue to use the old configuration.
 UPDATE modernecon_lock
 SET master       = :serverId,
     majorVersion = :majorVersion,
@@ -33,12 +34,28 @@ SET master       = :serverId,
 WHERE DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 MINUTE) > last_update;
 -- atomically set the master as self if last update from previous master was more than one minute ago
 -- #        }
+-- #        { acquire-with-config
+-- #            :serverId string
+-- #            :majorVersion int
+-- #            :minorVersion int
+-- #            :config string
+-- #            * Attempts to acquire the master status.
+-- #            * Only call this method when the server just started.
+-- #            * Successful acquisition will also modify the config.
+UPDATE modernecon_lock
+SET master       = :serverId,
+    majorVersion = :majorVersion,
+    minorVersion = :minorVersion,
+    config       = :config,
+    last_update  = CURRENT_TIMESTAMP
+WHERE DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 MINUTE) > last_update;
+-- #        }
 -- #        { release
 -- #            :serverId string
 -- #            * Releases the master status explicitly.
 -- #            * Should be executed by the master server before its shutdown.
 UPDATE modernecon_lock
-SET last_update = DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 HOUR)
+SET last_update = DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY)
 WHERE master = :serverId;
 -- #        }
 -- #        { maintain
@@ -57,7 +74,14 @@ WHERE master = :serverId;
 -- #            * The result contains 1 row if there is an active master server, or 0 row if no active master.
 -- #            * Do not rely on this query result for atomic operations.
 -- #            * This is under the assumption that all queries take way less than 10 seconds.
-SELECT master, majorVersion, minorVersion
+-- #            * The config is not directly fetched, while the md5 hash of the config is fetched
+SELECT master, majorVersion, minorVersion, MD5(config) config_hash
+FROM modernecon_lock
+WHERE DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 70 SECOND) < last_update;
+-- #        }
+-- #        { query-config
+-- #            * Downloads the latest configuration.
+SELECT config, MD5(config) config_hash
 FROM modernecon_lock
 WHERE DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 70 SECOND) < last_update;
 -- #        }

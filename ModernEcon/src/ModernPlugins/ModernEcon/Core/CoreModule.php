@@ -21,7 +21,9 @@
 
 namespace ModernPlugins\ModernEcon\Core;
 
+use Generator;
 use Logger;
+use ModernPlugins\ModernEcon\Configuration\Configuration;
 use ModernPlugins\ModernEcon\Core\Master\MasterManager;
 use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
 use pocketmine\plugin\Plugin;
@@ -45,7 +47,20 @@ final class CoreModule{
 		$this->connector = $connector;
 
 		$this->masterManager = new MasterManager(new PrefixedLogger($logger, "Master"), $connector, $serverId);
-		Await::g2c($this->masterManager->execute($plugin->getScheduler()));
+	}
+
+	public function syncConfig(Configuration $configuration) : Generator{
+		yield $this->masterManager->executeInit();
+		yield $this->masterManager->executeIteration($configuration);
+		if($this->masterManager->isMaster()){
+			return $configuration;
+		}
+		return yield $this->masterManager->fetchMasterConfiguration();
+	}
+
+	public function init(Configuration $configuration) : Generator{
+		false && yield;
+		Await::g2c($this->masterManager->executeLoop($this->plugin->getScheduler()));
 	}
 
 	public function shutdown() : void{

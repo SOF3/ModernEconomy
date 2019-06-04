@@ -23,12 +23,17 @@ namespace ModernPlugins\ModernEcon\Core\Master;
 
 use Generator;
 use Logger;
+use ModernPlugins\ModernEcon\Configuration\Configuration;
 use ModernPlugins\ModernEcon\Core\PeerServer;
 use ModernPlugins\ModernEcon\Generated\Queries;
+use ModernPlugins\ModernEcon\Main;
 use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
 use ModernPlugins\ModernEcon\Utils\AwaitUtils;
 use pocketmine\scheduler\TaskScheduler;
+use pocketmine\Server;
 use function count;
+use function serialize;
+use function unserialize;
 
 final class MasterManager{
 	/** @var Logger */
@@ -42,6 +47,8 @@ final class MasterManager{
 	private $master = false;
 	/** @var PeerServer|null */
 	private $currentMaster = null;
+	/** @var string|null */
+	private $configHash = null;
 
 	/** @var bool */
 	private $shutdown = false;
@@ -52,49 +59,82 @@ final class MasterManager{
 		$this->serverId = $serverId;
 	}
 
-	public function execute(TaskScheduler $scheduler) : Generator{
+	public function executeInit() : Generator{
 		yield $this->connector->executeGeneric(Queries::MODERNECON_CORE_LOCK_CREATE);
 		yield $this->connector->executeGeneric(Queries::MODERNECON_CORE_LOCK_INIT);
-		yield $this->executeLoop($scheduler);
 	}
 
-	private function executeLoop(TaskScheduler $scheduler) : Generator{
-		while(!$this->shutdown){
-			if($this->master){
-				/** @var int $maintained */
-				$maintained = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_MAINTAIN, [
+	public function executeIteration(?Configuration $configuration = null) : Generator{
+		if($this->master){
+			/** @var int $maintained */
+			$maintained = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_MAINTAIN, [
+				"serverId" => $this->serverId,
+			]);
+			if($maintained === 0){
+				$this->master = false;
+				(new MasterReleaseEvent)->call();
+			}
+		}else{
+			/** @var int $acquired */
+			if($configuration !== null){
+				$acquired = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_ACQUIRE_WITH_CONFIG, [
 					"serverId" => $this->serverId,
+					"majorVersion" => Main::MAJOR_VERSION,
+					"minorVersion" => Main::MINOR_VERSION,
+					"config" => serialize($configuration),
 				]);
-				if($maintained === 0){
-					$this->master = false;
-					(new MasterReleaseEvent)->call();
-				}
 			}else{
-				/** @var int $acquired */
 				$acquired = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_ACQUIRE, [
 					"serverId" => $this->serverId,
+					"majorVersion" => Main::MAJOR_VERSION,
+					"minorVersion" => Main::MINOR_VERSION,
 				]);
-				if($acquired === 1){
-					$this->master = true;
-					(new MasterAcquisitionEvent())->call();
-				}else{
-					$rows = yield $this->connector->executeSelect(Queries::MODERNECON_CORE_LOCK_QUERY);
-					if(count($rows) === 0){
-						// This would happen if lock.acquire was executed more than 10 seconds ago,
-						// and the master server lost its master status just after that
-						// Let's continue to the next loop immediately so that we can try to acquire the lock again
-						$this->logger->debug("Master acquisition failed but cannot query master successfully. MySQL lag?");
-						continue;
+			}
+			if($acquired === 1){
+				$this->master = true;
+				(new MasterAcquisitionEvent())->call();
+			}else{
+				$rows = yield $this->connector->executeSelect(Queries::MODERNECON_CORE_LOCK_QUERY);
+				if(count($rows) === 0){
+					// This would happen if lock.acquire was executed more than 10 seconds ago,
+					// and the master server lost its master status just after that
+					// Let's continue to the next loop immediately so that we can try to acquire the lock again
+					$this->logger->debug("Master acquisition failed but cannot query master successfully. MySQL lag?");
+					return false;
+				}
+				$row = $rows[0];
+				if($this->currentMaster === null || $row["master"] !== $this->currentMaster->getServerId()){
+					$this->currentMaster = new PeerServer($row["master"], $row["majorVersion"], $row["minorVersion"]);
+					if(!self::isVersionCompatible($this->currentMaster->getMajorVersion(), $this->currentMaster->getMinorVersion())){
+						$this->logger->critical("ModernEcon network is acquired by a server of version {$row["majorVersion"]}.{$row["minorVersion"]}. Please use the same ModernEcon version on all servers. Shutting down server.");
+						Server::getInstance()->shutdown();
+						return true;
 					}
-					$row = $rows[0];
-					if($this->currentMaster === null || $row["master"] !== $this->currentMaster->getServerId()){
-						$this->currentMaster = new PeerServer($row["master"], $row["majorVersion"], $row["minorVersion"]);
-						(new MasterChangeEvent($this->currentMaster))->call();
+					if($this->configHash !== null && $row["config_hash"] !== $this->configHash){
+						$this->logger->critical("ModernEcon network configuration is updated. Please restart.");
+						Server::getInstance()->shutdown();
+						return true;
 					}
+					(new MasterChangeEvent($this->currentMaster))->call();
 				}
 			}
-			yield AwaitUtils::sleep($scheduler, 30, AwaitUtils::SECONDS);
 		}
+		return true;
+	}
+
+	public function executeLoop(TaskScheduler $scheduler) : Generator{
+		while(!$this->shutdown){
+			$wait = yield $this->executeIteration();
+			if($wait){
+				yield AwaitUtils::sleep($scheduler, 30, AwaitUtils::SECONDS);
+			}
+		}
+	}
+
+	public function fetchMasterConfiguration() : Generator{
+		$row = yield $this->connector->executeSelect(Queries::MODERNECON_CORE_LOCK_QUERY_CONFIG);
+		$this->configHash = $row["config_hash"];
+		return unserialize($row["config"], ["allowed_classes" => [Configuration::CONFIG_CLASSES]]);
 	}
 
 	public function isMaster() : bool{
@@ -120,5 +160,9 @@ final class MasterManager{
 				(new MasterReleaseEvent)->call();
 			}
 		}
+	}
+
+	public static function isVersionCompatible(int $major, int $minor) : bool{
+		return $major === Main::MAJOR_VERSION && $minor <= Main::MINOR_VERSION;
 	}
 }

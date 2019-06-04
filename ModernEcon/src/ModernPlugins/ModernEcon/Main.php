@@ -21,17 +21,23 @@
 
 namespace ModernPlugins\ModernEcon;
 
+use Generator;
+use ModernPlugins\ModernEcon\Configuration\Configuration;
 use ModernPlugins\ModernEcon\Core\CoreModule;
 use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
 use pocketmine\plugin\PluginBase;
 use poggit\libasynql\libasynql;
 use PrefixedLogger;
+use SOFe\AwaitGenerator\Await;
 use function array_map;
 use function bin2hex;
 use function random_bytes;
 
 /** @noinspection PhpUnused */
 final class Main extends PluginBase{
+	public const MAJOR_VERSION = 0;
+	public const MINOR_VERSION = 1;
+
 	/** @var string */
 	private $tempServerId;
 
@@ -42,6 +48,10 @@ final class Main extends PluginBase{
 	private $coreModule;
 
 	public function onEnable() : void{
+		$this->saveDefaultConfig();
+		$configuration = new Configuration();
+		$configuration->import($this->getConfig());
+
 		$sqlFiles = [
 			"core",
 		];
@@ -54,12 +64,22 @@ final class Main extends PluginBase{
 		$db = new AwaitDataConnector($db);
 
 		$this->tempServerId = bin2hex(random_bytes(8));
-		$this->coreModule = new CoreModule(
-			$this, new PrefixedLogger($this->getLogger(), "Core"), $db,
-			$this->tempServerId);
+		$this->db = $db;
+
+		Await::g2c($this->asyncEnable($configuration));
 
 		$db->getConnector()->waitAll();
-		$this->db = $db;
+	}
+
+	private function asyncEnable(Configuration $config) : Generator{
+		$this->coreModule = new CoreModule(
+			$this, new PrefixedLogger($this->getLogger(), "Core"), $this->db, $this->tempServerId);
+		$config = yield $this->coreModule->syncConfig($config);
+
+		$this->coreModule->init($config);
+
+
+		$this->getLogger()->info("Startup completed."); // necessary message to let user know when to start other servers
 	}
 
 	protected function onDisable(){

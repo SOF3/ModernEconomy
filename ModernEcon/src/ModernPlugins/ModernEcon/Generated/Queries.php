@@ -18,10 +18,10 @@ final class Queries{
 	 * `affectedRows == 1` indicates whether the master status is acquired.
 	 * If two non-master servers execute this query simultaneously, the first one wins.
 	 * This is under the assumption that all queries take way less than 10 seconds.
-	 * TODO: config synchronization
+	 * The configuration is not updated. All servers shall continue to use the old configuration.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - ModernEcon/resources/core.mysql.sql:35
+	 * - ModernEcon/resources/core.mysql.sql:36
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:minorVersion</code> int, required in core.mysql.sql
@@ -33,10 +33,28 @@ final class Queries{
 	/**
 	 * <i>(Description from ModernEcon/resources/core.mysql.sql)</i>
 	 *
+	 * Attempts to acquire the master status.
+	 * Only call this method when the server just started.
+	 * Successful acquisition will also modify the config.
+	 *
+	 * <h4>Declared in:</h4>
+	 * - ModernEcon/resources/core.mysql.sql:52
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:minorVersion</code> int, required in core.mysql.sql
+	 * - <code>:majorVersion</code> int, required in core.mysql.sql
+	 * - <code>:serverId</code> string, required in core.mysql.sql
+	 * - <code>:config</code> string, required in core.mysql.sql
+	 */
+	public const MODERNECON_CORE_LOCK_ACQUIRE_WITH_CONFIG = "modernecon.core.lock.acquire-with-config";
+
+	/**
+	 * <i>(Description from ModernEcon/resources/core.mysql.sql)</i>
+	 *
 	 * The modernecon_lock table contains a single row that contains the ID of the server that currently acquires the lock.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - ModernEcon/resources/core.mysql.sql:12
+	 * - ModernEcon/resources/core.mysql.sql:13
 	 */
 	public const MODERNECON_CORE_LOCK_CREATE = "modernecon.core.lock.create";
 
@@ -46,7 +64,7 @@ final class Queries{
 	 * Initializes the table to contain exactly one null row with a safe value.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - ModernEcon/resources/core.mysql.sql:17
+	 * - ModernEcon/resources/core.mysql.sql:18
 	 */
 	public const MODERNECON_CORE_LOCK_INIT = "modernecon.core.lock.init";
 
@@ -60,7 +78,7 @@ final class Queries{
 	 * `affectedRows == 0` implies that, for some reason, the master server changed.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - ModernEcon/resources/core.mysql.sql:54
+	 * - ModernEcon/resources/core.mysql.sql:71
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:serverId</code> string, required in core.mysql.sql
@@ -74,11 +92,22 @@ final class Queries{
 	 * The result contains 1 row if there is an active master server, or 0 row if no active master.
 	 * Do not rely on this query result for atomic operations.
 	 * This is under the assumption that all queries take way less than 10 seconds.
+	 * The config is not directly fetched, while the md5 hash of the config is fetched
 	 *
 	 * <h4>Declared in:</h4>
-	 * - ModernEcon/resources/core.mysql.sql:63
+	 * - ModernEcon/resources/core.mysql.sql:81
 	 */
 	public const MODERNECON_CORE_LOCK_QUERY = "modernecon.core.lock.query";
+
+	/**
+	 * <i>(Description from ModernEcon/resources/core.mysql.sql)</i>
+	 *
+	 * Downloads the latest configuration.
+	 *
+	 * <h4>Declared in:</h4>
+	 * - ModernEcon/resources/core.mysql.sql:87
+	 */
+	public const MODERNECON_CORE_LOCK_QUERY_CONFIG = "modernecon.core.lock.query-config";
 
 	/**
 	 * <i>(Description from ModernEcon/resources/core.mysql.sql)</i>
@@ -87,7 +116,7 @@ final class Queries{
 	 * Should be executed by the master server before its shutdown.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - ModernEcon/resources/core.mysql.sql:43
+	 * - ModernEcon/resources/core.mysql.sql:60
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:serverId</code> string, required in core.mysql.sql
