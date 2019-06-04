@@ -1,5 +1,5 @@
 -- #!mysql
--- #{ modernecon.core.lock
+-- #{ core.lock
 -- #    { create
 -- #        * The modernecon_lock table contains a single row that contains the ID of the server that currently acquires the lock.
 CREATE TABLE IF NOT EXISTS modernecon_lock (

@@ -21,7 +21,7 @@ final class Queries{
 	 * <h3>Variables</h3>
 	 * - <code>:name</code> string, required in currency.mysql.sql
 	 */
-	public const MODERNECON_CORE_CURRENCY_ADD_CURRENCY = "modernecon.core.currency.add.currency";
+	public const CORE_CURRENCY_ADD_CURRENCY = "core.currency.add.currency";
 
 	/**
 	 * <i>(Description from resources/core/currency.mysql.sql)</i>
@@ -38,7 +38,7 @@ final class Queries{
 	 * - <code>:currency</code> int, required in currency.mysql.sql
 	 * - <code>:name</code> string, required in currency.mysql.sql
 	 */
-	public const MODERNECON_CORE_CURRENCY_ADD_SUBCURRENCY = "modernecon.core.currency.add.subcurrency";
+	public const CORE_CURRENCY_ADD_SUBCURRENCY = "core.currency.add.subcurrency";
 
 	/**
 	 * <i>(Description from resources/core/currency.mysql.sql)</i>
@@ -48,7 +48,7 @@ final class Queries{
 	 * <h4>Declared in:</h4>
 	 * - resources/core/currency.mysql.sql:10
 	 */
-	public const MODERNECON_CORE_CURRENCY_CREATE_CURRENCY = "modernecon.core.currency.create.currency";
+	public const CORE_CURRENCY_CREATE_CURRENCY = "core.currency.create.currency";
 
 	/**
 	 * <i>(Description from resources/core/currency.mysql.sql)</i>
@@ -58,7 +58,7 @@ final class Queries{
 	 * <h4>Declared in:</h4>
 	 * - resources/core/currency.mysql.sql:25
 	 */
-	public const MODERNECON_CORE_CURRENCY_CREATE_SUBCURRENCY = "modernecon.core.currency.create.subcurrency";
+	public const CORE_CURRENCY_CREATE_SUBCURRENCY = "core.currency.create.subcurrency";
 
 	/**
 	 * <h4>Declared in:</h4>
@@ -67,19 +67,19 @@ final class Queries{
 	 * <h3>Variables</h3>
 	 * - <code>:name</code> string, required in currency.mysql.sql
 	 */
-	public const MODERNECON_CORE_CURRENCY_GET_ID_BY_NAME = "modernecon.core.currency.get-id-by-name";
+	public const CORE_CURRENCY_GET_ID_BY_NAME = "core.currency.get-id-by-name";
 
 	/**
 	 * <h4>Declared in:</h4>
 	 * - resources/core/currency.mysql.sql:31
 	 */
-	public const MODERNECON_CORE_CURRENCY_LOAD_ALL_CURRENCY = "modernecon.core.currency.load-all.currency";
+	public const CORE_CURRENCY_LOAD_ALL_CURRENCY = "core.currency.load-all.currency";
 
 	/**
 	 * <h4>Declared in:</h4>
 	 * - resources/core/currency.mysql.sql:35
 	 */
-	public const MODERNECON_CORE_CURRENCY_LOAD_ALL_SUBCURRENCY = "modernecon.core.currency.load-all.subcurrency";
+	public const CORE_CURRENCY_LOAD_ALL_SUBCURRENCY = "core.currency.load-all.subcurrency";
 
 	/**
 	 * <h4>Declared in:</h4>
@@ -88,7 +88,7 @@ final class Queries{
 	 * <h3>Variables</h3>
 	 * - <code>:id</code> int, required in currency.mysql.sql
 	 */
-	public const MODERNECON_CORE_CURRENCY_LOAD_CURRENCY = "modernecon.core.currency.load.currency";
+	public const CORE_CURRENCY_LOAD_CURRENCY = "core.currency.load.currency";
 
 	/**
 	 * <h4>Declared in:</h4>
@@ -97,7 +97,7 @@ final class Queries{
 	 * <h3>Variables</h3>
 	 * - <code>:id</code> int, required in currency.mysql.sql
 	 */
-	public const MODERNECON_CORE_CURRENCY_LOAD_SUBCURRENCY = "modernecon.core.currency.load.subcurrency";
+	public const CORE_CURRENCY_LOAD_SUBCURRENCY = "core.currency.load.subcurrency";
 
 	/**
 	 * <i>(Description from resources/core/lock.mysql.sql)</i>
@@ -117,7 +117,7 @@ final class Queries{
 	 * - <code>:majorVersion</code> int, required in lock.mysql.sql
 	 * - <code>:serverId</code> string, required in lock.mysql.sql
 	 */
-	public const MODERNECON_CORE_LOCK_ACQUIRE = "modernecon.core.lock.acquire";
+	public const CORE_LOCK_ACQUIRE = "core.lock.acquire";
 
 	/**
 	 * <i>(Description from resources/core/lock.mysql.sql)</i>
@@ -135,7 +135,7 @@ final class Queries{
 	 * - <code>:serverId</code> string, required in lock.mysql.sql
 	 * - <code>:config</code> string, required in lock.mysql.sql
 	 */
-	public const MODERNECON_CORE_LOCK_ACQUIRE_WITH_CONFIG = "modernecon.core.lock.acquire-with-config";
+	public const CORE_LOCK_ACQUIRE_WITH_CONFIG = "core.lock.acquire-with-config";
 
 	/**
 	 * <i>(Description from resources/core/lock.mysql.sql)</i>
@@ -145,7 +145,7 @@ final class Queries{
 	 * <h4>Declared in:</h4>
 	 * - resources/core/lock.mysql.sql:12
 	 */
-	public const MODERNECON_CORE_LOCK_CREATE = "modernecon.core.lock.create";
+	public const CORE_LOCK_CREATE = "core.lock.create";
 
 	/**
 	 * <i>(Description from resources/core/lock.mysql.sql)</i>
@@ -155,7 +155,7 @@ final class Queries{
 	 * <h4>Declared in:</h4>
 	 * - resources/core/lock.mysql.sql:17
 	 */
-	public const MODERNECON_CORE_LOCK_INIT = "modernecon.core.lock.init";
+	public const CORE_LOCK_INIT = "core.lock.init";
 
 	/**
 	 * <i>(Description from resources/core/lock.mysql.sql)</i>
@@ -172,7 +172,7 @@ final class Queries{
 	 * <h3>Variables</h3>
 	 * - <code>:serverId</code> string, required in lock.mysql.sql
 	 */
-	public const MODERNECON_CORE_LOCK_MAINTAIN = "modernecon.core.lock.maintain";
+	public const CORE_LOCK_MAINTAIN = "core.lock.maintain";
 
 	/**
 	 * <i>(Description from resources/core/lock.mysql.sql)</i>
@@ -186,7 +186,7 @@ final class Queries{
 	 * <h4>Declared in:</h4>
 	 * - resources/core/lock.mysql.sql:80
 	 */
-	public const MODERNECON_CORE_LOCK_QUERY = "modernecon.core.lock.query";
+	public const CORE_LOCK_QUERY = "core.lock.query";
 
 	/**
 	 * <i>(Description from resources/core/lock.mysql.sql)</i>
@@ -196,7 +196,7 @@ final class Queries{
 	 * <h4>Declared in:</h4>
 	 * - resources/core/lock.mysql.sql:86
 	 */
-	public const MODERNECON_CORE_LOCK_QUERY_CONFIG = "modernecon.core.lock.query-config";
+	public const CORE_LOCK_QUERY_CONFIG = "core.lock.query-config";
 
 	/**
 	 * <i>(Description from resources/core/lock.mysql.sql)</i>
@@ -210,6 +210,6 @@ final class Queries{
 	 * <h3>Variables</h3>
 	 * - <code>:serverId</code> string, required in lock.mysql.sql
 	 */
-	public const MODERNECON_CORE_LOCK_RELEASE = "modernecon.core.lock.release";
+	public const CORE_LOCK_RELEASE = "core.lock.release";
 
 }

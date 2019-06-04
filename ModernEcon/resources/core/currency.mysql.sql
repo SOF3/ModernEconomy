@@ -1,5 +1,5 @@
 -- #!mysql
--- #{ modernecon.core.currency
+-- #{ core.currency
 -- #    { create
 -- #        { currency
 -- #            * Creates the currency table

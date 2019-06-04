@@ -60,14 +60,14 @@ final class MasterManager{
 	}
 
 	public function executeInit() : Generator{
-		yield $this->connector->executeGeneric(Queries::MODERNECON_CORE_LOCK_CREATE);
-		yield $this->connector->executeGeneric(Queries::MODERNECON_CORE_LOCK_INIT);
+		yield $this->connector->executeGeneric(Queries::CORE_LOCK_CREATE);
+		yield $this->connector->executeGeneric(Queries::CORE_LOCK_INIT);
 	}
 
 	public function executeIteration(?Configuration $configuration = null) : Generator{
 		if($this->master){
 			/** @var int $maintained */
-			$maintained = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_MAINTAIN, [
+			$maintained = yield $this->connector->executeChange(Queries::CORE_LOCK_MAINTAIN, [
 				"serverId" => $this->serverId,
 			]);
 			if($maintained === 0){
@@ -77,14 +77,14 @@ final class MasterManager{
 		}else{
 			/** @var int $acquired */
 			if($configuration !== null){
-				$acquired = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_ACQUIRE_WITH_CONFIG, [
+				$acquired = yield $this->connector->executeChange(Queries::CORE_LOCK_ACQUIRE_WITH_CONFIG, [
 					"serverId" => $this->serverId,
 					"majorVersion" => Main::MAJOR_VERSION,
 					"minorVersion" => Main::MINOR_VERSION,
 					"config" => serialize($configuration),
 				]);
 			}else{
-				$acquired = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_ACQUIRE, [
+				$acquired = yield $this->connector->executeChange(Queries::CORE_LOCK_ACQUIRE, [
 					"serverId" => $this->serverId,
 					"majorVersion" => Main::MAJOR_VERSION,
 					"minorVersion" => Main::MINOR_VERSION,
@@ -94,7 +94,7 @@ final class MasterManager{
 				$this->master = true;
 				(new MasterAcquisitionEvent())->call();
 			}else{
-				$rows = yield $this->connector->executeSelect(Queries::MODERNECON_CORE_LOCK_QUERY);
+				$rows = yield $this->connector->executeSelect(Queries::CORE_LOCK_QUERY);
 				if(count($rows) === 0){
 					// This would happen if lock.acquire was executed more than 10 seconds ago,
 					// and the master server lost its master status just after that
@@ -132,7 +132,7 @@ final class MasterManager{
 	}
 
 	public function fetchMasterConfiguration() : Generator{
-		$row = yield $this->connector->executeSelect(Queries::MODERNECON_CORE_LOCK_QUERY_CONFIG);
+		$row = yield $this->connector->executeSelect(Queries::CORE_LOCK_QUERY_CONFIG);
 		$this->configHash = $row["config_hash"];
 		return unserialize($row["config"], ["allowed_classes" => [Configuration::CONFIG_CLASSES]]);
 	}
@@ -153,7 +153,7 @@ final class MasterManager{
 	public function shutdown() : Generator{
 		$this->shutdown = true;
 		if($this->master){
-			$released = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_RELEASE, [
+			$released = yield $this->connector->executeChange(Queries::CORE_LOCK_RELEASE, [
 				"serverId" => $this->serverId,
 			]);
 			if($released){

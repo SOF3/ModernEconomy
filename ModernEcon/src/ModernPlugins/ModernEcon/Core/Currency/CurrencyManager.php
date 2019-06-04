@@ -38,8 +38,8 @@ final class CurrencyManager{
 
 	public static function create(Logger $logger, AwaitDataConnector $db, MasterManager $masterManager, bool $creating) : Generator{
 		if($creating){
-			yield $db->executeGeneric(Queries::MODERNECON_CORE_CURRENCY_CREATE_CURRENCY);
-			yield $db->executeGeneric(Queries::MODERNECON_CORE_CURRENCY_CREATE_SUBCURRENCY);
+			yield $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_CURRENCY);
+			yield $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_SUBCURRENCY);
 		}
 
 		$manager = new CurrencyManager();
@@ -50,14 +50,14 @@ final class CurrencyManager{
 	}
 
 	public function getCurrencyByName(string $name) : Generator{
-		$idRows = yield $this->db->executeSelect(Queries::MODERNECON_CORE_CURRENCY_GET_ID_BY_NAME, [
+		$idRows = yield $this->db->executeSelect(Queries::CORE_CURRENCY_GET_ID_BY_NAME, [
 			"name" => $name,
 		]);
 		return $this->getCurrency($idRows[0]["id"]);
 	}
 
 	public function getCurrency(int $id) : Generator{
-		$rows = yield $this->db->executeSelect(Queries::MODERNECON_CORE_CURRENCY_LOAD_CURRENCY, [
+		$rows = yield $this->db->executeSelect(Queries::CORE_CURRENCY_LOAD_CURRENCY, [
 			"id" => $id,
 		]);
 		if(empty($rows)){
@@ -66,7 +66,7 @@ final class CurrencyManager{
 		$currencyRow = $rows[0];
 		$currency = new Currency($currencyRow["id"], $currencyRow["name"]);
 		$subcurrencies = [];
-		foreach(yield $this->db->executeSelect(Queries::MODERNECON_CORE_CURRENCY_LOAD_SUBCURRENCY, [
+		foreach(yield $this->db->executeSelect(Queries::CORE_CURRENCY_LOAD_SUBCURRENCY, [
 			"id" => $id,
 		]) as $row){
 			$subcurrency = new Subcurrency($row["id"], $row["name"], $currency,
@@ -83,7 +83,7 @@ final class CurrencyManager{
 			throw new InvalidStateException("Currencies can only be created by the master server");
 		}
 
-		$id = yield $this->db->executeInsert(Queries::MODERNECON_CORE_CURRENCY_ADD_CURRENCY, [
+		$id = yield $this->db->executeInsert(Queries::CORE_CURRENCY_ADD_CURRENCY, [
 			"name" => $name,
 		]);
 		$currency = new Currency($id, $name);
@@ -94,7 +94,7 @@ final class CurrencyManager{
 	}
 
 	public function createSubcurrency(Currency $currency, string $name, string $symbolBefore, string $symbolAfter, int $magnitude) : Generator{
-		$id = yield $this->db->executeInsert(Queries::MODERNECON_CORE_CURRENCY_ADD_SUBCURRENCY, [
+		$id = yield $this->db->executeInsert(Queries::CORE_CURRENCY_ADD_SUBCURRENCY, [
 			"name" => $name,
 			"currency" => $currency->getId(),
 			"symbolBefore" => $symbolBefore,
