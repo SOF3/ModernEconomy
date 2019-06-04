@@ -52,6 +52,7 @@ final class CoreModule{
 		$module->currencyManager = yield CurrencyManager::create(new PrefixedLogger($logger, "Currency"),
 			$db, $masterManager, $creating);
 
+
 		return $module;
 	}
 

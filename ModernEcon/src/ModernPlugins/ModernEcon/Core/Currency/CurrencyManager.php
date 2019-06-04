@@ -36,9 +36,6 @@ final class CurrencyManager{
 	/** @var MasterManager */
 	private $masterManager;
 
-	/** @var Currency[] */
-	private $currencies;
-
 	public static function create(Logger $logger, AwaitDataConnector $db, MasterManager $masterManager, bool $creating) : Generator{
 		if($creating){
 			yield $db->executeGeneric(Queries::MODERNECON_CORE_CURRENCY_CREATE_CURRENCY);
@@ -49,12 +46,36 @@ final class CurrencyManager{
 		$manager->logger = $logger;
 		$manager->db = $db;
 		$manager->masterManager = $masterManager;
-		yield $manager->loadCurrencies();
 		return $manager;
 	}
 
-	private function loadCurrencies() : Generator{
-		$this->currencies = yield Currency::loadAll($this->db);
+	public function getCurrencyByName(string $name) : Generator{
+		$idRows = yield $this->db->executeSelect(Queries::MODERNECON_CORE_CURRENCY_GET_ID_BY_NAME, [
+			"name" => $name,
+		]);
+		return $this->getCurrency($idRows[0]["id"]);
+	}
+
+	public function getCurrency(int $id) : Generator{
+		$rows = yield $this->db->executeSelect(Queries::MODERNECON_CORE_CURRENCY_LOAD_CURRENCY, [
+			"id" => $id,
+		]);
+		if(empty($rows)){
+			return null;
+		}
+		$currencyRow = $rows[0];
+		$currency = new Currency($currencyRow["id"], $currencyRow["name"]);
+		$subcurrencies = [];
+		foreach(yield $this->db->executeSelect(Queries::MODERNECON_CORE_CURRENCY_LOAD_SUBCURRENCY, [
+			"id" => $id,
+		]) as $row){
+			$subcurrency = new Subcurrency($row["id"], $row["name"], $currency,
+				$row["symbolBefore"], $row["symbolAfter"],
+				$row["magnitude"]);
+			$subcurrencies[$subcurrency->getId()] = $subcurrency;
+		}
+		$currency->setSubcurrencies($subcurrencies);
+		return $currency;
 	}
 
 	public function createCurrency(string $name, string $subName, string $symbolBefore, string $symbolAfter) : Generator{
@@ -69,7 +90,6 @@ final class CurrencyManager{
 
 		yield $this->createSubcurrency($currency, $subName, $symbolBefore, $symbolAfter, 1);
 
-
 		return $currency;
 	}
 
@@ -83,6 +103,7 @@ final class CurrencyManager{
 		]);
 		$subcurrency = new Subcurrency($id, $name, $currency, $symbolBefore, $symbolAfter, 1);
 		$currency->setSubcurrencies($currency->getSubcurrencies() + [$id => $subcurrency]);
+		return $subcurrency;
 	}
 
 	private function __construct(){

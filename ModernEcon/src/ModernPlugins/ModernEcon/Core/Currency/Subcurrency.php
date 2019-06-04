@@ -80,4 +80,8 @@ final class Subcurrency{
 	public function getMagnitude() : int{
 		return $this->magnitude;
 	}
+
+	public function toString(int $amount) : string{
+		return $this->symbolBefore . $amount . $this->symbolAfter;
+	}
 }

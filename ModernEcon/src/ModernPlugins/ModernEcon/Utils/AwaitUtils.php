@@ -26,7 +26,7 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use SOFe\AwaitGenerator\Await;
 
-class AwaitUtils{
+final class AwaitUtils{
 	public const TICKS = 1;
 	public const SECONDS = 20;
 	public const MINUTES = self::SECONDS * 60;
@@ -38,5 +38,8 @@ class AwaitUtils{
 			$callback();
 		}), $amount * $unit);
 		yield Await::ONCE;
+	}
+
+	private function __construct(){
 	}
 }

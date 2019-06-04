@@ -21,9 +21,9 @@
 
 namespace ModernPlugins\ModernEcon\Core\Currency;
 
-use Generator;
-use ModernPlugins\ModernEcon\Generated\Queries;
-use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
+use function floor;
+use function implode;
+use function uasort;
 
 final class Currency{
 	/** @var int */
@@ -33,26 +33,6 @@ final class Currency{
 	/** @var Subcurrency[] */
 	private $subcurrencies = [];
 
-	public static function loadAll(AwaitDataConnector $db) : Generator{
-		$currencies = yield $db->executeSelect(Queries::MODERNECON_CORE_CURRENCY_LOAD_ALL_CURRENCY);
-		$subcurrencies = yield $db->executeSelect(Queries::MODERNECON_CORE_CURRENCY_LOAD_ALL_SUBCURRENCY);
-
-		$output = [];
-		foreach($currencies as $currencyRow){
-			$currency = new Currency($currencyRow["id"], $currencyRow["name"]);
-			foreach($subcurrencies as $subcurrencyRow){
-				if($subcurrencyRow["currency"] === $currency->id){
-					$subcurrency = new Subcurrency($subcurrencyRow["id"], $subcurrencyRow["name"], $currency,
-						$subcurrencyRow["symbolBefore"], $subcurrencyRow["symbolAfter"],
-						$subcurrencyRow["magnitude"]);
-					$currency->subcurrencies[$subcurrency->getId()] = $subcurrency;
-				}
-			}
-			$output[] = $currency;
-		}
-		return $output;
-	}
-
 	/**
 	 * Currency constructor.
 	 *
@@ -60,7 +40,6 @@ final class Currency{
 	 * @param string $name
 	 *
 	 * @internal Only to be called from classes in this namespace.
-	 *
 	 */
 	public function __construct(int $id, string $name){
 		$this->id = $id;
@@ -89,6 +68,20 @@ final class Currency{
 	 *
 	 */
 	public function setSubcurrencies(array $subcurrencies) : void{
+		uasort($subcurrencies, static function(Subcurrency $a, Subcurrency $b) : int{
+			return -($a->getMagnitude() <=> $b->getMagnitude());
+		});
 		$this->subcurrencies = $subcurrencies;
+	}
+
+	public function toString(int $amount) : string{
+		$output = [];
+		foreach($this->subcurrencies as $subcurrency){
+			if($subcurrency->getMagnitude() <= $amount){
+				$output[] = $subcurrency->toString((int) floor($amount / $subcurrency->getMagnitude()));
+				$amount %= $subcurrency->getMagnitude();
+			}
+		}
+		return implode(" ", $output);
 	}
 }

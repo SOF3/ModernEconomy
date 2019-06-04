@@ -16,7 +16,7 @@ final class Queries{
 	 * Adds a new currency
 	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/currency.mysql.sql:43
+	 * - resources/core/currency.mysql.sql:63
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:name</code> string, required in currency.mysql.sql
@@ -29,7 +29,7 @@ final class Queries{
 	 * Adds a new subcurrency
 	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/currency.mysql.sql:53
+	 * - resources/core/currency.mysql.sql:73
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:symbolBefore</code> string, required in currency.mysql.sql
@@ -62,6 +62,15 @@ final class Queries{
 
 	/**
 	 * <h4>Declared in:</h4>
+	 * - resources/core/currency.mysql.sql:56
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:name</code> string, required in currency.mysql.sql
+	 */
+	public const MODERNECON_CORE_CURRENCY_GET_ID_BY_NAME = "modernecon.core.currency.get-id-by-name";
+
+	/**
+	 * <h4>Declared in:</h4>
 	 * - resources/core/currency.mysql.sql:31
 	 */
 	public const MODERNECON_CORE_CURRENCY_LOAD_ALL_CURRENCY = "modernecon.core.currency.load-all.currency";
@@ -71,6 +80,24 @@ final class Queries{
 	 * - resources/core/currency.mysql.sql:35
 	 */
 	public const MODERNECON_CORE_CURRENCY_LOAD_ALL_SUBCURRENCY = "modernecon.core.currency.load-all.subcurrency";
+
+	/**
+	 * <h4>Declared in:</h4>
+	 * - resources/core/currency.mysql.sql:43
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:id</code> int, required in currency.mysql.sql
+	 */
+	public const MODERNECON_CORE_CURRENCY_LOAD_CURRENCY = "modernecon.core.currency.load.currency";
+
+	/**
+	 * <h4>Declared in:</h4>
+	 * - resources/core/currency.mysql.sql:49
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:id</code> int, required in currency.mysql.sql
+	 */
+	public const MODERNECON_CORE_CURRENCY_LOAD_SUBCURRENCY = "modernecon.core.currency.load.subcurrency";
 
 	/**
 	 * <i>(Description from resources/core/lock.mysql.sql)</i>

@@ -34,6 +34,26 @@ SELECT id, name, currency, symbolBefore, symbolAfter, magnitude
 FROM subcurrency;
 -- #        }
 -- #    }
+-- #    { load
+-- #        { currency
+-- #            :id int
+SELECT name
+FROM currency
+WHERE id = :id;
+-- #        }
+-- #        { subcurrency
+-- #            :id int
+SELECT id, name, currency, symbolBefore, symbolAfter, magnitude
+FROM subcurrency
+WHERE currency = :id;
+-- #        }
+-- #    }
+-- #    { get-id-by-name
+-- #        :name string
+SELECT id
+FROM currency
+WHERE name = :name;
+-- #    }
 -- #    { add
 -- #        { currency
 -- #            :name string
