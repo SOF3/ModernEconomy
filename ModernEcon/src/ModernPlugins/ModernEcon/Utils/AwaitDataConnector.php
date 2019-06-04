@@ -53,7 +53,15 @@ class AwaitDataConnector{
 	public function executeInsert(string $queryName, array $args = []) : Generator{
 		$resolve = yield;
 		$this->connector->executeInsert($queryName, $args, static function(int $insertId, int $affectedRows) use ($resolve): void{
-			$resolve();
+			$resolve($insertId);
+		}, yield Await::REJECT);
+		return yield Await::ONCE;
+	}
+
+	public function executeInsertWithAffectedRows(string $queryName, array $args = []) : Generator{
+		$resolve = yield;
+		$this->connector->executeInsert($queryName, $args, static function(int $insertId, int $affectedRows) use ($resolve): void{
+			$resolve([$insertId, $affectedRows]);
 		}, yield Await::REJECT);
 		return yield Await::ONCE;
 	}

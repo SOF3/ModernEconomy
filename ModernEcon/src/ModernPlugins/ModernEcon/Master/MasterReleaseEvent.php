@@ -19,10 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Core\Master;
+namespace ModernPlugins\ModernEcon\Master;
 
 use pocketmine\event\Event;
 
-class MasterAcquisitionEvent extends Event{
+/**
+ * Called when this server loses master status.
+ * Also called if the server actively releases its master status during shutdown.
+ */
+class MasterReleaseEvent extends Event{
 
 }

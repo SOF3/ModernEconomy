@@ -24,11 +24,11 @@ namespace ModernPlugins\ModernEcon\Core;
 use Generator;
 use Logger;
 use ModernPlugins\ModernEcon\Configuration\Configuration;
-use ModernPlugins\ModernEcon\Core\Master\MasterManager;
+use ModernPlugins\ModernEcon\Core\Currency\CurrencyManager;
+use ModernPlugins\ModernEcon\Master\MasterManager;
 use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
 use pocketmine\plugin\Plugin;
 use PrefixedLogger;
-use SOFe\AwaitGenerator\Await;
 
 final class CoreModule{
 	/** @var Plugin */
@@ -36,34 +36,29 @@ final class CoreModule{
 	/** @var Logger */
 	private $logger;
 	/** @var AwaitDataConnector */
-	private $connector;
+	private $db;
+	/** @var Configuration */
+	private $configuration;
 
-	/** @var MasterManager */
-	private $masterManager;
+	private $currencyManager;
 
-	public function __construct(Plugin $plugin, Logger $logger, AwaitDataConnector $connector, string $serverId){
-		$this->plugin = $plugin;
-		$this->logger = $logger;
-		$this->connector = $connector;
+	public static function create(Plugin $plugin, Logger $logger, AwaitDataConnector $db, Configuration $configuration, MasterManager $masterManager, bool $creating) : Generator{
+		$module = new CoreModule();
+		$module->plugin = $plugin;
+		$module->logger = $logger;
+		$module->db = $db;
+		$module->configuration = $configuration;
 
-		$this->masterManager = new MasterManager(new PrefixedLogger($logger, "Master"), $connector, $serverId);
+		$module->currencyManager = yield CurrencyManager::create(new PrefixedLogger($logger, "Currency"),
+			$db, $masterManager, $creating);
+
+		return $module;
 	}
 
-	public function syncConfig(Configuration $configuration) : Generator{
-		yield $this->masterManager->executeInit();
-		yield $this->masterManager->executeIteration($configuration);
-		if($this->masterManager->isMaster()){
-			return $configuration;
-		}
-		return yield $this->masterManager->fetchMasterConfiguration();
-	}
-
-	public function init(Configuration $configuration) : Generator{
-		false && yield;
-		Await::g2c($this->masterManager->executeLoop($this->plugin->getScheduler()));
-	}
 
 	public function shutdown() : void{
-		$this->masterManager->shutdown();
+	}
+
+	private function __construct(){
 	}
 }

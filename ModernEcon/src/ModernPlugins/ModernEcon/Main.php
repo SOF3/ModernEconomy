@@ -24,6 +24,7 @@ namespace ModernPlugins\ModernEcon;
 use Generator;
 use ModernPlugins\ModernEcon\Configuration\Configuration;
 use ModernPlugins\ModernEcon\Core\CoreModule;
+use ModernPlugins\ModernEcon\Master\MasterManager;
 use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
 use pocketmine\plugin\PluginBase;
 use poggit\libasynql\libasynql;
@@ -44,6 +45,8 @@ final class Main extends PluginBase{
 	/** @var AwaitDataConnector */
 	private $db;
 
+	/** @var MasterManager */
+	private $masterManager;
 	/** @var CoreModule */
 	private $coreModule;
 
@@ -52,8 +55,19 @@ final class Main extends PluginBase{
 		$configuration = new Configuration();
 		$configuration->import($this->getConfig());
 
+		$this->tempServerId = bin2hex(random_bytes(8));
+		$this->db = $this->createDb();
+
+		Await::g2c($this->asyncEnable($configuration));
+
+		$this->db->getConnector()->waitAll();
+		Await::g2c($this->masterManager->executeLoop($this->getScheduler()));
+	}
+
+	private function createDb() : AwaitDataConnector{
 		$sqlFiles = [
-			"core",
+			"core/lock",
+			"core/currency",
 		];
 		$sqlMap = ["mysql" => array_map(static function(string $file){
 			return "$file.mysql.sql";
@@ -61,28 +75,33 @@ final class Main extends PluginBase{
 			return "$file.sqlite.sql";
 		}, $sqlFiles)];
 		$db = libasynql::create($this, $this->getConfig()->get("database"), $sqlMap);
-		$db = new AwaitDataConnector($db);
-
-		$this->tempServerId = bin2hex(random_bytes(8));
-		$this->db = $db;
-
-		Await::g2c($this->asyncEnable($configuration));
-
-		$db->getConnector()->waitAll();
+		return new AwaitDataConnector($db);
 	}
 
 	private function asyncEnable(Configuration $config) : Generator{
-		$this->coreModule = new CoreModule(
-			$this, new PrefixedLogger($this->getLogger(), "Core"), $this->db, $this->tempServerId);
-		$config = yield $this->coreModule->syncConfig($config);
+		$this->masterManager = new MasterManager(new PrefixedLogger($this->getLogger(), "Master"), $this->db, $this->tempServerId);
+		$config = yield $this->syncConfig($config);
 
-		$this->coreModule->init($config);
+		$creating = false; // TODO define $creating
 
+		$this->coreModule = CoreModule::create(
+			$this, new PrefixedLogger($this->getLogger(), "Core"),
+			$this->db, $config, $this->masterManager, $creating);
 
 		$this->getLogger()->info("Startup completed."); // necessary message to let user know when to start other servers
 	}
 
+	private function syncConfig(Configuration $configuration) : Generator{
+		yield $this->masterManager->executeInit();
+		yield $this->masterManager->executeIteration($configuration);
+		if($this->masterManager->isMaster()){
+			return $configuration;
+		}
+		return yield $this->masterManager->fetchMasterConfiguration();
+	}
+
 	protected function onDisable(){
+		$this->masterManager->shutdown();
 		$this->coreModule->shutdown();
 		$this->db->getConnector()->close();
 	}

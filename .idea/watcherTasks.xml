@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectTasksOptions">
     <TaskOptions isEnabled="true">
-      <option name="arguments" value="-dphar.readonly=0 libs/libasynql.phar def ModernEcon/src ModernPlugins\ModernEcon\Generated\Queries --prefix &quot;&quot; --eol LF --sql ModernEcon/resources --struct &quot;final class&quot;" />
+      <option name="arguments" value="-dphar.readonly=0 ../libs/libasynql.phar def src ModernPlugins\ModernEcon\Generated\Queries --prefix &quot;&quot; --eol LF --sql resources --struct &quot;final class&quot;" />
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" />
       <option name="exitCodeBehavior" value="ERROR" />
@@ -18,7 +18,7 @@
       <option name="runOnExternalChanges" value="true" />
       <option name="scopeName" value="resources" />
       <option name="trackOnlyRoot" value="false" />
-      <option name="workingDir" value="$ProjectFileDir$" />
+      <option name="workingDir" value="$ProjectFileDir$/ModernEcon" />
       <envs />
     </TaskOptions>
   </component>
