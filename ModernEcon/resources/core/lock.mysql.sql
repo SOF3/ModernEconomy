@@ -4,10 +4,10 @@
 -- #        * The modernecon_lock table contains a single row that contains the ID of the server that currently acquires the lock.
 CREATE TABLE IF NOT EXISTS modernecon_lock (
 	master       CHAR(16),
-	majorVersion INT,
-	minorVersion INT,
-	config       TEXT,
-	lastUpdate  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	majorVersion INT  NOT NULL,
+	minorVersion INT  NOT NULL,
+	config       TEXT NOT NULL,
+	lastUpdate   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 -- #    }
 -- #    { init

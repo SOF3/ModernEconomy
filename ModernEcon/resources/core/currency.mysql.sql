@@ -5,7 +5,7 @@
 -- #            * Creates the currency table
 CREATE TABLE modernecon_currency (
 	id   INT PRIMARY KEY AUTO_INCREMENT,
-	name VARCHAR(255) UNIQUE
+	name VARCHAR(255) UNIQUE NOT NULL
 )
 	CHARACTER SET 'utf8mb4';
 -- #        }
@@ -13,14 +13,15 @@ CREATE TABLE modernecon_currency (
 -- #            * Creates the subcurrency table
 CREATE TABLE modernecon_subcurrency (
 	id           INT PRIMARY KEY AUTO_INCREMENT,
-	name         VARCHAR(255),
-	currency     INT,
-	symbolBefore VARCHAR(255),
-	symbolAfter  VARCHAR(255),
-	magnitude    INT,
+	name         VARCHAR(255) NOT NULL,
+	currency     INT          NOT NULL,
+	symbolBefore VARCHAR(255) NOT NULL,
+	symbolAfter  VARCHAR(255) NOT NULL,
+	magnitude    INT          NOT NULL,
 	UNIQUE KEY (currency, name),
 	UNIQUE KEY (currency, magnitude),
 	FOREIGN KEY (currency) REFERENCES modernecon_currency(id)
+		ON DELETE CASCADE
 )
 	CHARACTER SET 'utf8mb4';
 -- #        }
