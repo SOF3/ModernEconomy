@@ -62,7 +62,7 @@ final class MasterManager{
 		while(!$this->shutdown){
 			if($this->master){
 				/** @var int $maintained */
-				$maintained = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_ACQUIRE, [
+				$maintained = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_MAINTAIN, [
 					"serverId" => $this->serverId,
 				]);
 				if($maintained === 0){
