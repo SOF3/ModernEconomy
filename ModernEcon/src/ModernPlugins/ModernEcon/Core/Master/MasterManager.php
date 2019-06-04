@@ -19,18 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Core;
+namespace ModernPlugins\ModernEcon\Core\Master;
 
 use Generator;
 use Logger;
-use ModernPlugins\ModernEcon\Core\Master\MasterAcquisitionEvent;
-use ModernPlugins\ModernEcon\Core\Master\MasterChangeEvent;
-use ModernPlugins\ModernEcon\Core\Master\MasterLossEvent;
+use ModernPlugins\ModernEcon\Core\PeerServer;
 use ModernPlugins\ModernEcon\Generated\Queries;
 use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
 use ModernPlugins\ModernEcon\Utils\AwaitUtils;
 use pocketmine\scheduler\TaskScheduler;
-use function assert;
 use function count;
 
 final class MasterManager{

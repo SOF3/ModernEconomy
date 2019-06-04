@@ -22,6 +22,7 @@
 namespace ModernPlugins\ModernEcon\Core;
 
 use Logger;
+use ModernPlugins\ModernEcon\Core\Master\MasterManager;
 use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
 use pocketmine\plugin\Plugin;
 use PrefixedLogger;
