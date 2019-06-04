@@ -60,7 +60,7 @@ final class Queries{
 	 * `affectedRows == 0` implies that, for some reason, the master server changed.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - ModernEcon/resources/core.mysql.sql:46
+	 * - ModernEcon/resources/core.mysql.sql:54
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:serverId</code> string, required in core.mysql.sql
@@ -76,8 +76,22 @@ final class Queries{
 	 * This is under the assumption that all queries take way less than 10 seconds.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - ModernEcon/resources/core.mysql.sql:55
+	 * - ModernEcon/resources/core.mysql.sql:63
 	 */
 	public const MODERNECON_CORE_LOCK_QUERY = "modernecon.core.lock.query";
+
+	/**
+	 * <i>(Description from ModernEcon/resources/core.mysql.sql)</i>
+	 *
+	 * Releases the master status explicitly.
+	 * Should be executed by the master server before its shutdown.
+	 *
+	 * <h4>Declared in:</h4>
+	 * - ModernEcon/resources/core.mysql.sql:43
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:serverId</code> string, required in core.mysql.sql
+	 */
+	public const MODERNECON_CORE_LOCK_RELEASE = "modernecon.core.lock.release";
 
 }

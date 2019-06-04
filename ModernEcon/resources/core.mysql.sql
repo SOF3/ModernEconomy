@@ -33,6 +33,14 @@ SET master       = :serverId,
 WHERE DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 MINUTE) > last_update;
 -- atomically set the master as self if last update from previous master was more than one minute ago
 -- #        }
+-- #        { release
+-- #            :serverId string
+-- #            * Releases the master status explicitly.
+-- #            * Should be executed by the master server before its shutdown.
+UPDATE modernecon_lock
+SET last_update = DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 HOUR)
+WHERE master = :serverId;
+-- #        }
 -- #        { maintain
 -- #            :serverId string
 -- #            * Maintains the master status.

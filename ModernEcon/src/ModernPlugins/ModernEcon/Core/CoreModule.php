@@ -47,4 +47,8 @@ final class CoreModule{
 		$this->masterManager = new MasterManager(new PrefixedLogger($logger, "Master"), $connector, $serverId);
 		Await::g2c($this->masterManager->execute($plugin->getScheduler()));
 	}
+
+	public function shutdown() : void{
+		$this->masterManager->shutdown();
+	}
 }

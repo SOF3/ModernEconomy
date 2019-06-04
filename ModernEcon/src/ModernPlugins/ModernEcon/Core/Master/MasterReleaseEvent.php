@@ -23,6 +23,10 @@ namespace ModernPlugins\ModernEcon\Core\Master;
 
 use pocketmine\event\Event;
 
-class MasterLossEvent extends Event{
+/**
+ * Called when this server loses master status.
+ * Also called if the server actively releases its master status during shutdown.
+ */
+class MasterReleaseEvent extends Event{
 
 }

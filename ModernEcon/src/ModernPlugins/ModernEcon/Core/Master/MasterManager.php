@@ -43,6 +43,9 @@ final class MasterManager{
 	/** @var PeerServer|null */
 	private $currentMaster = null;
 
+	/** @var bool */
+	private $shutdown = false;
+
 	public function __construct(Logger $logger, AwaitDataConnector $connector, string $serverId){
 		$this->logger = $logger;
 		$this->connector = $connector;
@@ -56,7 +59,7 @@ final class MasterManager{
 	}
 
 	private function executeLoop(TaskScheduler $scheduler) : Generator{
-		while(true){
+		while(!$this->shutdown){
 			if($this->master){
 				/** @var int $maintained */
 				$maintained = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_ACQUIRE, [
@@ -64,7 +67,7 @@ final class MasterManager{
 				]);
 				if($maintained === 0){
 					$this->master = false;
-					(new MasterLossEvent)->call();
+					(new MasterReleaseEvent)->call();
 				}
 			}else{
 				/** @var int $acquired */
@@ -94,6 +97,10 @@ final class MasterManager{
 		}
 	}
 
+	public function isMaster() : bool{
+		return $this->master;
+	}
+
 	/**
 	 * This method only returns non-null when $this->master is false.
 	 *
@@ -101,5 +108,17 @@ final class MasterManager{
 	 */
 	public function getCurrentMaster() : ?PeerServer{
 		return $this->currentMaster;
+	}
+
+	public function shutdown() : Generator{
+		$this->shutdown = true;
+		if($this->master){
+			$released = yield $this->connector->executeChange(Queries::MODERNECON_CORE_LOCK_RELEASE, [
+				"serverId" => $this->serverId,
+			]);
+			if($released){
+				(new MasterReleaseEvent)->call();
+			}
+		}
 	}
 }

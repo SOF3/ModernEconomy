@@ -30,9 +30,13 @@ use function array_map;
 use function bin2hex;
 use function random_bytes;
 
+/** @noinspection PhpUnused */
 final class Main extends PluginBase{
 	/** @var string */
 	private $tempServerId;
+
+	/** @var AwaitDataConnector */
+	private $db;
 
 	/** @var CoreModule */
 	private $coreModule;
@@ -53,6 +57,14 @@ final class Main extends PluginBase{
 		$this->coreModule = new CoreModule(
 			$this, new PrefixedLogger($this->getLogger(), "Core"), $db,
 			$this->tempServerId);
+
+		$db->getConnector()->waitAll();
+		$this->db = $db;
+	}
+
+	protected function onDisable(){
+		$this->coreModule->shutdown();
+		$this->db->getConnector()->close();
 	}
 
 	public function getCoreModule() : CoreModule{
