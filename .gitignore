@@ -1,5 +1,6 @@
 .idea/*
 !.idea/ModernEcon.iml
+!.idea/codeStyles
 !.idea/fileTemplates
 !.idea/inspectionProfiles
 !.idea/scopes
