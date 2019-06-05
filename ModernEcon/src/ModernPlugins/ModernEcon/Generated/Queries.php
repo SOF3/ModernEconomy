@@ -17,6 +17,56 @@ final class Queries{
 	public const CORE_ACCOUNT_CREATE = "core.account.create";
 
 	/**
+	 * <h4>Declared in:</h4>
+	 * - resources/core/account.mysql.sql:22
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:id</code> int, required in account.mysql.sql
+	 */
+	public const CORE_ACCOUNT_GET = "core.account.get";
+
+	/**
+	 * <h4>Declared in:</h4>
+	 * - resources/core/account.mysql.sql:29
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:ownerName</code> string, required in account.mysql.sql
+	 * - <code>:ownerType</code> string, required in account.mysql.sql
+	 * - <code>:id</code> int, required in account.mysql.sql
+	 */
+	public const CORE_ACCOUNT_SET_OWNER = "core.account.set.owner";
+
+	/**
+	 * <i>(Description from resources/core/account.mysql.sql)</i>
+	 *
+	 * Add :amount to the account #:id if the current (old) balance is at most :ifMax
+	 *
+	 * <h4>Declared in:</h4>
+	 * - resources/core/account.mysql.sql:49
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:amount</code> int, required in account.mysql.sql
+	 * - <code>:ifMax</code> int, required in account.mysql.sql
+	 * - <code>:id</code> int, required in account.mysql.sql
+	 */
+	public const CORE_ACCOUNT_TRY_ADD_IF_MAX = "core.account.try-add.if-max";
+
+	/**
+	 * <i>(Description from resources/core/account.mysql.sql)</i>
+	 *
+	 * Add :amount to the account #:id if the current (old) balance is at least :ifMin
+	 *
+	 * <h4>Declared in:</h4>
+	 * - resources/core/account.mysql.sql:40
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:amount</code> int, required in account.mysql.sql
+	 * - <code>:ifMin</code> int, required in account.mysql.sql
+	 * - <code>:id</code> int, required in account.mysql.sql
+	 */
+	public const CORE_ACCOUNT_TRY_ADD_IF_MIN = "core.account.try-add.if-min";
+
+	/**
 	 * <i>(Description from resources/core/currency.mysql.sql)</i>
 	 *
 	 * Adds a new currency

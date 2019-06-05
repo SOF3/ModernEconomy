@@ -28,7 +28,6 @@ use ModernPlugins\ModernEcon\Core\Currency\CurrencyManager;
 use ModernPlugins\ModernEcon\Master\MasterManager;
 use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
 use pocketmine\plugin\Plugin;
-use PrefixedLogger;
 
 final class CoreModule{
 	/** @var Plugin */
@@ -49,13 +48,10 @@ final class CoreModule{
 		$module->db = $db;
 		$module->configuration = $configuration;
 
-		$module->currencyManager = yield CurrencyManager::create(new PrefixedLogger($logger, "Currency"),
-			$db, $masterManager, $creating);
-
+		$module->currencyManager = yield CurrencyManager::create($db, $masterManager, $creating);
 
 		return $module;
 	}
-
 
 	public function shutdown() : void{
 	}

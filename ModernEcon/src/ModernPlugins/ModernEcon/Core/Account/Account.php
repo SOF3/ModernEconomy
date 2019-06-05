@@ -21,22 +21,98 @@
 
 namespace ModernPlugins\ModernEcon\Core\Account;
 
+use Generator;
 use ModernPlugins\ModernEcon\Core\Currency\Currency;
+use ModernPlugins\ModernEcon\Core\Currency\CurrencyManager;
+use ModernPlugins\ModernEcon\Generated\Queries;
+use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
 
 final class Account{
+	/** @var AwaitDataConnector */
+	private $db;
+
 	/** @var int */
 	private $id;
-
 	/** @var string */
 	private $ownerType;
 	/** @var string */
 	private $ownerName;
 	/** @var string */
 	private $accountType;
-
 	/** @var Currency */
 	private $currency;
+	/** @var int */
+	private $balance;
+	/** @var int */
+	private $lastAccessBeforeSelect;
 
-	// not storing balance as it is concurrency-critical
-	// not storing lastAccess directly
+	public function getId() : int{
+		return $this->id;
+	}
+
+	public function getOwnerType() : string{
+		return $this->ownerType;
+	}
+
+	public function getOwnerName() : string{
+		return $this->ownerName;
+	}
+
+	public function setOwnerType(string $type, string $name) : Generator{
+		yield $this->db->executeChange(Queries::CORE_ACCOUNT_SET_OWNER, [
+			"id" => $this->id,
+			"ownerType" => $type,
+			"ownerName" => $name,
+		]);
+	}
+
+	public function getAccountType() : string{
+		return $this->accountType;
+	}
+
+	public function getCurrency() : Currency{
+		return $this->currency;
+	}
+
+	public function getBalance() : int{
+		return $this->balance;
+	}
+
+	public function tryAddBalance(int $amount, int $max = 1 << 31) : Generator{
+		$affectedRows = yield $this->db->executeChange(Queries::CORE_ACCOUNT_TRY_ADD_IF_MAX, [
+			"id" => $this->id,
+			"amount" => $amount,
+			"ifMax" => $max - $amount,
+		]);
+		return $affectedRows > 0;
+	}
+
+	public function trySubtractBalance(int $amount, int $min = 0) : Generator{
+		$affectedRows = yield $this->db->executeChange(Queries::CORE_ACCOUNT_TRY_ADD_IF_MIN, [
+			"id" => $this->id,
+			"amount" => -$amount,
+			"ifMax" => $min + $amount,
+		]);
+		return $affectedRows > 0;
+	}
+
+	public static function getAccount(AwaitDataConnector $db, CurrencyManager $currencyManager, int $id) : Generator{
+		$row = yield $db->executeSelect(Queries::CORE_ACCOUNT_GET, [
+			"id" => $id,
+		]);
+
+		$account = new Account;
+		$account->db = $db;
+		$account->id = $row["id"];
+		$account->ownerType = $row["ownerType"];
+		$account->ownerName = $row["ownerName"];
+		$account->accountType = $row["accountType"];
+		$account->currency = yield $currencyManager->getCurrency($row["currency"]);
+		$account->balance = $row["balance"];
+		$account->lastAccessBeforeSelect = $row["lastAccess"];
+		return $account;
+	}
+
+	private function __construct(){
+	}
 }

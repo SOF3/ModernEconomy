@@ -23,27 +23,23 @@ namespace ModernPlugins\ModernEcon\Core\Currency;
 
 use Generator;
 use InvalidStateException;
-use Logger;
 use ModernPlugins\ModernEcon\Generated\Queries;
 use ModernPlugins\ModernEcon\Master\MasterManager;
 use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
 
 final class CurrencyManager{
-	/** @var Logger */
-	private $logger;
 	/** @var AwaitDataConnector */
 	private $db;
 	/** @var MasterManager */
 	private $masterManager;
 
-	public static function create(Logger $logger, AwaitDataConnector $db, MasterManager $masterManager, bool $creating) : Generator{
+	public static function create(AwaitDataConnector $db, MasterManager $masterManager, bool $creating) : Generator{
 		if($creating){
 			yield $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_CURRENCY);
 			yield $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_SUBCURRENCY);
 		}
 
 		$manager = new CurrencyManager();
-		$manager->logger = $logger;
 		$manager->db = $db;
 		$manager->masterManager = $masterManager;
 		return $manager;
