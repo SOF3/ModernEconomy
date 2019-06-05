@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,23 +19,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Configuration;
+namespace ModernPlugins\ModernEconomy\Master;
 
-use pocketmine\utils\Config;
+use ModernPlugins\ModernEconomy\Core\PeerServer;
+use pocketmine\event\Event;
 
-final class Configuration{
-	public const CONFIG_CLASSES = [
-		self::class,
-	];
+/**
+ * This event is called when a new master server is detected.
+ *
+ * This event is also called when the server starts up without successfully acquiring the master status
+ * because of another active master server.
+ */
+class MasterChangeEvent extends Event{
+	/** @var PeerServer */
+	private $newMaster;
 
-	public function __construct(){
+	public function __construct(PeerServer $newMaster){
+		$this->newMaster = $newMaster;
 	}
 
-	/**
-	 * @param Config $config
-	 * @throws ConfigurationException
-	 */
-	public function import(Config $config) : void{
-		// TODO parse config
+	public function getNewMaster() : PeerServer{
+		return $this->newMaster;
 	}
 }

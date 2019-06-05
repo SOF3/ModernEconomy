@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,27 +19,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Utils;
+namespace ModernPlugins\ModernEconomy\Master;
 
-use Generator;
-use pocketmine\scheduler\ClosureTask;
-use pocketmine\scheduler\TaskScheduler;
-use SOFe\AwaitGenerator\Await;
+use pocketmine\event\Event;
 
-final class AwaitUtils{
-	public const TICKS = 1;
-	public const SECONDS = 20;
-	public const MINUTES = self::SECONDS * 60;
-	public const HOURS = self::MINUTES * 60;
+class MasterAcquisitionEvent extends Event{
 
-	public static function sleep(TaskScheduler $scheduler, int $amount, int $unit = self::TICKS) : Generator{
-		$callback = yield;
-		$scheduler->scheduleDelayedTask(new ClosureTask(static function() use ($callback){
-			$callback();
-		}), $amount * $unit);
-		yield Await::ONCE;
-	}
-
-	private function __construct(){
-	}
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,14 +19,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Master;
+namespace ModernPlugins\ModernEconomy\Configuration;
 
-use pocketmine\event\Event;
+use pocketmine\utils\Config;
 
-/**
- * Called when this server loses master status.
- * Also called if the server actively releases its master status during shutdown.
- */
-class MasterReleaseEvent extends Event{
+final class Configuration{
+	public const CONFIG_CLASSES = [
+		self::class,
+	];
 
+	public function __construct(){
+	}
+
+	/**
+	 * @param Config $config
+	 * @throws ConfigurationException
+	 */
+	public function import(Config $config) : void{
+		// TODO parse config
+	}
 }

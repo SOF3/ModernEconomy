@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,14 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Core;
+namespace ModernPlugins\ModernEconomy\Core;
 
 use Generator;
 use Logger;
-use ModernPlugins\ModernEcon\Configuration\Configuration;
-use ModernPlugins\ModernEcon\Core\Currency\CurrencyManager;
-use ModernPlugins\ModernEcon\Master\MasterManager;
-use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
+use ModernPlugins\ModernEconomy\Configuration\Configuration;
+use ModernPlugins\ModernEconomy\Core\Currency\CurrencyManager;
+use ModernPlugins\ModernEconomy\Master\MasterManager;
+use ModernPlugins\ModernEconomy\Utils\AwaitDataConnector;
 use pocketmine\plugin\Plugin;
 
 final class CoreModule{

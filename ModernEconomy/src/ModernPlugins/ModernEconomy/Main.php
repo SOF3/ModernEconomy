@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,13 +19,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon;
+namespace ModernPlugins\ModernEconomy;
 
 use Generator;
-use ModernPlugins\ModernEcon\Configuration\Configuration;
-use ModernPlugins\ModernEcon\Core\CoreModule;
-use ModernPlugins\ModernEcon\Master\MasterManager;
-use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
+use ModernPlugins\ModernEconomy\Configuration\Configuration;
+use ModernPlugins\ModernEconomy\Core\CoreModule;
+use ModernPlugins\ModernEconomy\Master\MasterManager;
+use ModernPlugins\ModernEconomy\Utils\AwaitDataConnector;
 use pocketmine\plugin\PluginBase;
 use poggit\libasynql\libasynql;
 use PrefixedLogger;

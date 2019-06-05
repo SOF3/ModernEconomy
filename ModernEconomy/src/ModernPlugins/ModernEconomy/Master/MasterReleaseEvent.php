@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,31 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Core;
+namespace ModernPlugins\ModernEconomy\Master;
 
-class PeerServer{
-	/** @var string */
-	private $serverId;
-	/** @var int */
-	private $majorVersion;
-	/** @var int */
-	private $minorVersion;
+use pocketmine\event\Event;
 
-	public function __construct(string $serverId, int $majorVersion, int $minorVersion){
-		$this->serverId = $serverId;
-		$this->majorVersion = $majorVersion;
-		$this->minorVersion = $minorVersion;
-	}
+/**
+ * Called when this server loses master status.
+ * Also called if the server actively releases its master status during shutdown.
+ */
+class MasterReleaseEvent extends Event{
 
-	public function getServerId() : string{
-		return $this->serverId;
-	}
-
-	public function getMajorVersion() : int{
-		return $this->majorVersion;
-	}
-
-	public function getMinorVersion() : int{
-		return $this->minorVersion;
-	}
 }

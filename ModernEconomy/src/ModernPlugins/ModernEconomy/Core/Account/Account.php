@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,13 +19,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Core\Account;
+namespace ModernPlugins\ModernEconomy\Core\Account;
 
 use Generator;
-use ModernPlugins\ModernEcon\Core\Currency\Currency;
-use ModernPlugins\ModernEcon\Core\Currency\CurrencyManager;
-use ModernPlugins\ModernEcon\Generated\Queries;
-use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
+use ModernPlugins\ModernEconomy\Core\Currency\Currency;
+use ModernPlugins\ModernEconomy\Core\Currency\CurrencyManager;
+use ModernPlugins\ModernEconomy\Generated\Queries;
+use ModernPlugins\ModernEconomy\Utils\AwaitDataConnector;
 
 final class Account{
 	/** @var AwaitDataConnector */

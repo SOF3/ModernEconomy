@@ -12,7 +12,7 @@
               <option name="patterns">
                 <list>
                   <Item>
-                    <option name="path" value="ModernEcon/plugin.yml" />
+                    <option name="path" value="ModernEconomy/plugin.yml" />
                   </Item>
                 </list>
               </option>

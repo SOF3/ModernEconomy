@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace ModernPlugins\ModernEcon\Generated;
+namespace ModernPlugins\ModernEconomy\Generated;
 
 final class Queries{
 	/**

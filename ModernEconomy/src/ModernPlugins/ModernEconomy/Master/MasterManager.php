@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,16 +19,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Master;
+namespace ModernPlugins\ModernEconomy\Master;
 
 use Generator;
 use Logger;
-use ModernPlugins\ModernEcon\Configuration\Configuration;
-use ModernPlugins\ModernEcon\Core\PeerServer;
-use ModernPlugins\ModernEcon\Generated\Queries;
-use ModernPlugins\ModernEcon\Main;
-use ModernPlugins\ModernEcon\Utils\AwaitDataConnector;
-use ModernPlugins\ModernEcon\Utils\AwaitUtils;
+use ModernPlugins\ModernEconomy\Configuration\Configuration;
+use ModernPlugins\ModernEconomy\Core\PeerServer;
+use ModernPlugins\ModernEconomy\Generated\Queries;
+use ModernPlugins\ModernEconomy\Main;
+use ModernPlugins\ModernEconomy\Utils\AwaitDataConnector;
+use ModernPlugins\ModernEconomy\Utils\AwaitUtils;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 use function count;
@@ -106,12 +106,12 @@ final class MasterManager{
 				if($this->currentMaster === null || $row["master"] !== $this->currentMaster->getServerId()){
 					$this->currentMaster = new PeerServer($row["master"], $row["majorVersion"], $row["minorVersion"]);
 					if(!self::isVersionCompatible($this->currentMaster->getMajorVersion(), $this->currentMaster->getMinorVersion())){
-						$this->logger->critical("ModernEcon network is acquired by a server of version {$row["majorVersion"]}.{$row["minorVersion"]}. Please use the same ModernEcon version on all servers. Shutting down server.");
+						$this->logger->critical("ModernEconomy network is acquired by a server of version {$row["majorVersion"]}.{$row["minorVersion"]}. Please use the same ModernEconomy version on all servers. Shutting down server.");
 						Server::getInstance()->shutdown();
 						return true;
 					}
 					if($this->configHash !== null && $row["config_hash"] !== $this->configHash){
-						$this->logger->critical("ModernEcon network configuration is updated. Please restart.");
+						$this->logger->critical("ModernEconomy network configuration is updated. Please restart.");
 						Server::getInstance()->shutdown();
 						return true;
 					}

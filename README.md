@@ -1,2 +1,2 @@
-# ModernEcon
+# ModernEconomy
 

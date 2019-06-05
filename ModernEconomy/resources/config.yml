@@ -22,7 +22,7 @@ database:
 #### BEGIN SYNCHRONIZED CONFIGURATION
 #### Settings below will be synchronized to all servers.
 #### For changes here to take effect, shut down ALL servers in the network, wait for a few seconds, then start ONLY this server.
-#### Only start other servers AFTER the "[ModernEcon] Startup completed" message is displayed.
+#### Only start other servers AFTER the "[ModernEconomy] Startup completed" message is displayed.
 #### Synchronized configuration will always be overridden by the earliest-started server in the network after the last global shutdown (except for some very rare race conditions).
 
 ### Core settings

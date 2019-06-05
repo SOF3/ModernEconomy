@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ModernEcon.iml" filepath="$PROJECT_DIR$/.idea/ModernEcon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ModernEconomy.iml" filepath="$PROJECT_DIR$/.idea/ModernEconomy.iml" />
     </modules>
   </component>
 </project>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,26 +19,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Master;
+namespace ModernPlugins\ModernEconomy\Utils;
 
-use ModernPlugins\ModernEcon\Core\PeerServer;
-use pocketmine\event\Event;
+use Generator;
+use pocketmine\scheduler\ClosureTask;
+use pocketmine\scheduler\TaskScheduler;
+use SOFe\AwaitGenerator\Await;
 
-/**
- * This event is called when a new master server is detected.
- *
- * This event is also called when the server starts up without successfully acquiring the master status
- * because of another active master server.
- */
-class MasterChangeEvent extends Event{
-	/** @var PeerServer */
-	private $newMaster;
+final class AwaitUtils{
+	public const TICKS = 1;
+	public const SECONDS = 20;
+	public const MINUTES = self::SECONDS * 60;
+	public const HOURS = self::MINUTES * 60;
 
-	public function __construct(PeerServer $newMaster){
-		$this->newMaster = $newMaster;
+	public static function sleep(TaskScheduler $scheduler, int $amount, int $unit = self::TICKS) : Generator{
+		$callback = yield;
+		$scheduler->scheduleDelayedTask(new ClosureTask(static function() use ($callback){
+			$callback();
+		}), $amount * $unit);
+		yield Await::ONCE;
 	}
 
-	public function getNewMaster() : PeerServer{
-		return $this->newMaster;
+	private function __construct(){
 	}
 }

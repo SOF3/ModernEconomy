@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,10 +19,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Configuration;
+namespace ModernPlugins\ModernEconomy\Core;
 
-use pocketmine\plugin\PluginException;
+class PeerServer{
+	/** @var string */
+	private $serverId;
+	/** @var int */
+	private $majorVersion;
+	/** @var int */
+	private $minorVersion;
 
-class ConfigurationException extends PluginException{
+	public function __construct(string $serverId, int $majorVersion, int $minorVersion){
+		$this->serverId = $serverId;
+		$this->majorVersion = $majorVersion;
+		$this->minorVersion = $minorVersion;
+	}
 
+	public function getServerId() : string{
+		return $this->serverId;
+	}
+
+	public function getMajorVersion() : int{
+		return $this->majorVersion;
+	}
+
+	public function getMinorVersion() : int{
+		return $this->minorVersion;
+	}
 }

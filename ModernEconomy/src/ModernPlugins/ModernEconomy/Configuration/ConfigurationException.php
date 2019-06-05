@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,10 +19,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Master;
+namespace ModernPlugins\ModernEconomy\Configuration;
 
-use pocketmine\event\Event;
+use pocketmine\plugin\PluginException;
 
-class MasterAcquisitionEvent extends Event{
+class ConfigurationException extends PluginException{
 
 }

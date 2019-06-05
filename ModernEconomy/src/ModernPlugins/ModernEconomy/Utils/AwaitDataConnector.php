@@ -1,7 +1,7 @@
 <?php
 
 /*
- * ModernEcon
+ * ModernEconomy
  *
  * Copyright (C) 2019 ModernPlugins
  *
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEcon\Utils;
+namespace ModernPlugins\ModernEconomy\Utils;
 
 use Generator;
 use poggit\libasynql\DataConnector;

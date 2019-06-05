@@ -1,6 +1,7 @@
 projects:
-  ModernEcon:
-    path: ModernEcon
+  ModernEconomy:
+    path: ModernEconomy
+    projectId: 5114
     libs:
       - src: poggit/libasynql/libasynql
         version: ^3.2
