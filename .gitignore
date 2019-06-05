@@ -9,3 +9,4 @@
 !.idea/php.xml
 !.idea/watcherTasks.xml
 *.phar
+!libs/*
