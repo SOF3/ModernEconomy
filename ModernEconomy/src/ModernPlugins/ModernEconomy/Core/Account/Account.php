@@ -25,10 +25,10 @@ use Generator;
 use ModernPlugins\ModernEconomy\Core\Currency\Currency;
 use ModernPlugins\ModernEconomy\Core\Currency\CurrencyManager;
 use ModernPlugins\ModernEconomy\Generated\Queries;
-use ModernPlugins\ModernEconomy\Utils\AwaitDataConnector;
+use ModernPlugins\ModernEconomy\Utils\DataBase;
 
 final class Account{
-	/** @var AwaitDataConnector */
+	/** @var DataBase */
 	private $db;
 
 	/** @var int */
@@ -96,7 +96,7 @@ final class Account{
 		return $affectedRows > 0;
 	}
 
-	public static function getAccount(AwaitDataConnector $db, CurrencyManager $currencyManager, int $id) : Generator{
+	public static function getAccount(DataBase $db, CurrencyManager $currencyManager, int $id) : Generator{
 		$row = yield $db->executeSelect(Queries::CORE_ACCOUNT_GET, [
 			"id" => $id,
 		]);

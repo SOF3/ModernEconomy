@@ -25,15 +25,15 @@ use Generator;
 use InvalidStateException;
 use ModernPlugins\ModernEconomy\Generated\Queries;
 use ModernPlugins\ModernEconomy\Master\MasterManager;
-use ModernPlugins\ModernEconomy\Utils\AwaitDataConnector;
+use ModernPlugins\ModernEconomy\Utils\DataBase;
 
 final class CurrencyManager{
-	/** @var AwaitDataConnector */
+	/** @var DataBase */
 	private $db;
 	/** @var MasterManager */
 	private $masterManager;
 
-	public static function create(AwaitDataConnector $db, MasterManager $masterManager, bool $creating) : Generator{
+	public static function create(DataBase $db, MasterManager $masterManager, bool $creating) : Generator{
 		if($creating){
 			yield $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_CURRENCY);
 			yield $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_SUBCURRENCY);

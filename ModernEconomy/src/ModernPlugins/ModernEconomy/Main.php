@@ -25,7 +25,7 @@ use Generator;
 use ModernPlugins\ModernEconomy\Configuration\Configuration;
 use ModernPlugins\ModernEconomy\Core\CoreModule;
 use ModernPlugins\ModernEconomy\Master\MasterManager;
-use ModernPlugins\ModernEconomy\Utils\AwaitDataConnector;
+use ModernPlugins\ModernEconomy\Utils\DataBase;
 use pocketmine\plugin\PluginBase;
 use poggit\libasynql\libasynql;
 use PrefixedLogger;
@@ -42,7 +42,7 @@ final class Main extends PluginBase{
 	/** @var string */
 	private $tempServerId;
 
-	/** @var AwaitDataConnector */
+	/** @var DataBase */
 	private $db;
 
 	/** @var MasterManager */
@@ -64,7 +64,7 @@ final class Main extends PluginBase{
 		Await::g2c($this->masterManager->executeLoop($this->getScheduler()));
 	}
 
-	private function createDb() : AwaitDataConnector{
+	private function createDb() : DataBase{
 		$sqlFiles = [
 			"core/lock",
 			"core/currency",
@@ -75,7 +75,7 @@ final class Main extends PluginBase{
 			return "$file.sqlite.sql";
 		}, $sqlFiles)];
 		$db = libasynql::create($this, $this->getConfig()->get("database"), $sqlMap);
-		return new AwaitDataConnector($db);
+		return new DataBase($db);
 	}
 
 	private function asyncEnable(Configuration $config) : Generator{

@@ -26,7 +26,7 @@ use Logger;
 use ModernPlugins\ModernEconomy\Configuration\Configuration;
 use ModernPlugins\ModernEconomy\Core\Currency\CurrencyManager;
 use ModernPlugins\ModernEconomy\Master\MasterManager;
-use ModernPlugins\ModernEconomy\Utils\AwaitDataConnector;
+use ModernPlugins\ModernEconomy\Utils\DataBase;
 use pocketmine\plugin\Plugin;
 
 final class CoreModule{
@@ -34,14 +34,14 @@ final class CoreModule{
 	private $plugin;
 	/** @var Logger */
 	private $logger;
-	/** @var AwaitDataConnector */
+	/** @var DataBase */
 	private $db;
 	/** @var Configuration */
 	private $configuration;
 
 	private $currencyManager;
 
-	public static function create(Plugin $plugin, Logger $logger, AwaitDataConnector $db, Configuration $configuration, MasterManager $masterManager, bool $creating) : Generator{
+	public static function create(Plugin $plugin, Logger $logger, DataBase $db, Configuration $configuration, MasterManager $masterManager, bool $creating) : Generator{
 		$module = new CoreModule();
 		$module->plugin = $plugin;
 		$module->logger = $logger;

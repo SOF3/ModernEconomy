@@ -28,7 +28,7 @@ use SOFe\AwaitGenerator\Await;
 /**
  * await-generator style wrapper for libasynql DataConnector
  */
-final class AwaitDataConnector{
+final class DataBase{
 	/** @var DataConnector */
 	private $connector;
 

@@ -27,7 +27,7 @@ use ModernPlugins\ModernEconomy\Configuration\Configuration;
 use ModernPlugins\ModernEconomy\Core\PeerServer;
 use ModernPlugins\ModernEconomy\Generated\Queries;
 use ModernPlugins\ModernEconomy\Main;
-use ModernPlugins\ModernEconomy\Utils\AwaitDataConnector;
+use ModernPlugins\ModernEconomy\Utils\DataBase;
 use ModernPlugins\ModernEconomy\Utils\AwaitUtils;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
@@ -38,7 +38,7 @@ use function unserialize;
 final class MasterManager{
 	/** @var Logger */
 	private $logger;
-	/** @var AwaitDataConnector */
+	/** @var DataBase */
 	private $connector;
 	/** @var string */
 	private $serverId;
@@ -53,7 +53,7 @@ final class MasterManager{
 	/** @var bool */
 	private $shutdown = false;
 
-	public function __construct(Logger $logger, AwaitDataConnector $connector, string $serverId){
+	public function __construct(Logger $logger, DataBase $connector, string $serverId){
 		$this->logger = $logger;
 		$this->connector = $connector;
 		$this->serverId = $serverId;
