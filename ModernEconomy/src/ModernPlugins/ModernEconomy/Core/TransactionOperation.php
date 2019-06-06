@@ -21,6 +21,33 @@
 
 namespace ModernPlugins\ModernEconomy\Core;
 
-final class TransactionOperation extends Operation{
+use Generator;
+use ModernPlugins\ModernEconomy\Utils\DataBase;
 
+final class TransactionOperation extends Operation{
+	/** @var LazyAccount */
+	private $source;
+	/** @var LazyAccount */
+	private $target;
+	/** @var int */
+	private $amount;
+
+	public function __construct(DataBase $db, AccountProvider $accountProvider, int $id, int $time, string $type, int $sourceId, int $targetId, int $amount){
+		parent::__construct($db, $accountProvider, $id, $time, $type);
+		$this->source = new LazyAccount($accountProvider, $sourceId);
+		$this->target = new LazyAccount($accountProvider, $targetId);
+		$this->amount = $amount;
+	}
+
+	public function getSource() : Generator{
+		return yield $this->source->getInstance();
+	}
+
+	public function getTarget() : Generator{
+		return yield $this->target->getInstance();
+	}
+
+	public function getAmount() : int{
+		return $this->amount;
+	}
 }

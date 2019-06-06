@@ -27,7 +27,7 @@ use ModernPlugins\ModernEconomy\Generated\Queries;
 use ModernPlugins\ModernEconomy\Master\MasterManager;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 
-final class CurrencyManager{
+final class CurrencyProvider{
 	/** @var DataBase */
 	private $db;
 	/** @var MasterManager */
@@ -39,10 +39,10 @@ final class CurrencyManager{
 			yield $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_SUBCURRENCY);
 		}
 
-		$manager = new CurrencyManager();
-		$manager->db = $db;
-		$manager->masterManager = $masterManager;
-		return $manager;
+		$provider = new self;
+		$provider->db = $db;
+		$provider->masterManager = $masterManager;
+		return $provider;
 	}
 
 	public function getCurrencyByName(string $name) : Generator{

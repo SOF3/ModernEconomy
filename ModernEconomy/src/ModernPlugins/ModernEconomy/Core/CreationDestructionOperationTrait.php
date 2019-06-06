@@ -21,18 +21,27 @@
 
 namespace ModernPlugins\ModernEconomy\Core;
 
-use ModernPlugins\ModernEconomy\Utils\DataBase;
+use Generator;
+use function assert;
 
-final class CreationOperation extends Operation{
-	use CreationDestructionOperationTrait;
+trait CreationDestructionOperationTrait{
+	/** @var int */
+	private $accountId;
+	/** @var Account */
+	private $account = null;
+	/** @var int */
+	private $amount;
 
-	public function __construct(DataBase $db, AccountProvider $accountProvider, int $id, int $time, string $type, int $accountId, int $amount){
-		parent::__construct($db, $accountProvider, $id, $time, $type);
-		$this->accountId = $accountId;
-		$this->amount = $amount;
+	public function getAccount() : Generator{
+		if($this->account === null){
+			$this->account = yield $this->asOperation()->getAccountProvider()->getAccount($this->accountId);
+		}
+		return $this->account;
 	}
 
-	protected function asOperation() : Operation{
-		return $this;
+	abstract protected function asOperation() : Operation;
+
+	public function getAmount() : int{
+		return $this->amount;
 	}
 }

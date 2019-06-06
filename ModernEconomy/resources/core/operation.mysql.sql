@@ -17,17 +17,15 @@ CREATE TABLE modernecon_operation_detail (
     diff    BIGINT NOT NULL,
     PRIMARY KEY (id, account),
     FOREIGN KEY (id) REFERENCES modernecon_operation_index(id) ON DELETE CASCADE,
-    FOREIGN KEY (account) REFERENCES modernecon_account(id) ON DELETE CASCADE
+    FOREIGN KEY (account) REFERENCES modernecon_account(id)
 );
 -- #        }
 -- #    }
--- #    { get
--- #        { creation-or-destruction
--- #            :id int
+-- #    { get-merged
+-- #        :id int
 SELECT i.id, UNIX_TIMESTAMP(time) time, class, type, account, diff
 FROM modernecon_operation_index i
          INNER JOIN modernecon_operation_detail d ON i.id = m.id
 WHERE i.id = :id;
--- #        }
 -- #    }
 -- #}

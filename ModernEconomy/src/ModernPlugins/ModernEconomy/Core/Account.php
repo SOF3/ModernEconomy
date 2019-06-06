@@ -23,11 +23,10 @@ namespace ModernPlugins\ModernEconomy\Core;
 
 use Generator;
 use ModernPlugins\ModernEconomy\Generated\Queries;
-use ModernPlugins\ModernEconomy\Utils\DataBase;
 
 final class Account{
-	/** @var DataBase */
-	private $db;
+	/** @var AccountProvider */
+	private $accountProvider;
 
 	/** @var int */
 	private $id;
@@ -37,12 +36,41 @@ final class Account{
 	private $ownerName;
 	/** @var string */
 	private $accountType;
+	/** @var int */
+	private $currencyId;
 	/** @var Currency */
 	private $currency;
 	/** @var int */
 	private $balance;
 	/** @var int */
 	private $lastAccessBeforeSelect;
+
+	/**
+	 * Account constructor.
+	 *
+	 * @param AccountProvider $accountProvider
+	 * @param int             $id
+	 * @param string          $ownerType
+	 * @param string          $ownerName
+	 * @param string          $accountType
+	 * @param int             $currencyId
+	 * @param int             $balance
+	 * @param int             $lastAccessBeforeSelect
+	 *
+	 * @internal Only to be called from this module
+	 */
+	public function __construct(
+		AccountProvider $accountProvider, int $id, string $ownerType, string $ownerName,
+		string $accountType, int $currencyId, int $balance, int $lastAccessBeforeSelect){
+		$this->accountProvider = $accountProvider;
+		$this->id = $id;
+		$this->ownerType = $ownerType;
+		$this->ownerName = $ownerName;
+		$this->accountType = $accountType;
+		$this->currencyId = $currencyId;
+		$this->balance = $balance;
+		$this->lastAccessBeforeSelect = $lastAccessBeforeSelect;
+	}
 
 	public function getId() : int{
 		return $this->id;
@@ -57,7 +85,7 @@ final class Account{
 	}
 
 	public function setOwnerType(string $type, string $name) : Generator{
-		yield $this->db->executeChange(Queries::CORE_ACCOUNT_SET_OWNER, [
+		yield $this->accountProvider->getDb()->executeChange(Queries::CORE_ACCOUNT_SET_OWNER, [
 			"id" => $this->id,
 			"ownerType" => $type,
 			"ownerName" => $name,
@@ -70,7 +98,10 @@ final class Account{
 		return $this->accountType;
 	}
 
-	public function getCurrency() : Currency{
+	public function getCurrency() : Generator{
+		if($this->currency === null){
+			$this->currency = yield $this->accountProvider->getCurrencyProvider()->getCurrency($this->currencyId);
+		}
 		return $this->currency;
 	}
 
@@ -78,23 +109,7 @@ final class Account{
 		return $this->balance;
 	}
 
-	public static function getAccount(DataBase $db, CurrencyManager $currencyManager, int $id) : Generator{
-		$row = yield $db->executeSelect(Queries::CORE_ACCOUNT_GET, [
-			"id" => $id,
-		]);
-
-		$account = new Account;
-		$account->db = $db;
-		$account->id = $row["id"];
-		$account->ownerType = $row["ownerType"];
-		$account->ownerName = $row["ownerName"];
-		$account->accountType = $row["accountType"];
-		$account->currency = yield $currencyManager->getCurrency($row["currency"]);
-		$account->balance = $row["balance"];
-		$account->lastAccessBeforeSelect = $row["lastAccess"];
-		return $account;
-	}
-
-	private function __construct(){
+	public function getLastAccessBeforeSelect() : int{
+		return $this->lastAccessBeforeSelect;
 	}
 }

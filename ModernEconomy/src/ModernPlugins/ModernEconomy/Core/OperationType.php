@@ -26,4 +26,7 @@ final class OperationType{
 	public const TYPE_DESTRUCTION = 1;
 	public const TYPE_TRANSACTION = 2;
 	public const TYPE_EXCHANGE = 3;
+
+	private function __construct(){
+	}
 }

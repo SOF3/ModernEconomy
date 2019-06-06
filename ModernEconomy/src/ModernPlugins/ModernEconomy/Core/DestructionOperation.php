@@ -21,6 +21,27 @@
 
 namespace ModernPlugins\ModernEconomy\Core;
 
-final class DestructionOperation extends Operation{
+use ModernPlugins\ModernEconomy\Utils\DataBase;
 
+final class DestructionOperation extends Operation{
+	use CreationDestructionOperationTrait;
+
+	public function __construct(DataBase $db, AccountProvider $accountProvider, int $id, int $time, string $type, int $accountId, int $amount){
+		parent::__construct($db, $accountProvider, $id, $time, $type);
+		$this->accountId = $accountId;
+		$this->amount = $amount;
+	}
+
+	protected function asOperation() : Operation{
+		return $this;
+	}
+
+	/**
+	 * Returns the amount lost. The value is always positive.
+	 *
+	 * @return int
+	 */
+	public function getAmount() : int{
+		return $this->amount;
+	}
 }

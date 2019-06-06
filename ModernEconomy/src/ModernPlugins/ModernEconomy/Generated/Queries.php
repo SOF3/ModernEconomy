@@ -252,11 +252,11 @@ final class Queries{
 
 	/**
 	 * <h4>Declared in:</h4>
-	 * - resources/core/operation.mysql.sql:31
+	 * - resources/core/operation.mysql.sql:30
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:id</code> int, required in operation.mysql.sql
 	 */
-	public const CORE_OPERATION_GET_CREATION_OR_DESTRUCTION = "core.operation.get.creation-or-destruction";
+	public const CORE_OPERATION_GET_MERGED = "core.operation.get-merged";
 
 }

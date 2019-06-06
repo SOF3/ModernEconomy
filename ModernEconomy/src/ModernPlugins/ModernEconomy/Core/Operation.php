@@ -21,20 +21,27 @@
 
 namespace ModernPlugins\ModernEconomy\Core;
 
-use Generator;
-use InvalidArgumentException;
-use ModernPlugins\ModernEconomy\Generated\Queries;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 
 abstract class Operation{
 	/** @var DataBase */
-	private $db;
+	protected $db;
+	/** @var AccountProvider */
+	protected $accountProvider;
 	/** @var int */
 	private $id;
 	/** @var float */
 	private $time;
 	/** @var string */
 	private $type;
+
+	protected function __construct(DataBase $db, AccountProvider $accountProvider, int $id, int $time, string $type){
+		$this->db = $db;
+		$this->accountProvider = $accountProvider;
+		$this->id = $id;
+		$this->time = $time;
+		$this->type = $type;
+	}
 
 	public function getId() : int{
 		return $this->id;
@@ -48,27 +55,7 @@ abstract class Operation{
 		return $this->type;
 	}
 
-	public static function getCreation(DataBase $db, CurrencyManager $currencyManager, int $id) : Generator{
-		$rows = yield $db->executeSelect(Queries::CORE_OPERATION_GET_CREATION_OR_DESTRUCTION, [
-			"id" => $id,
-		]);
-		if(empty($rows)){
-			return null;
-		}
-		$row = $rows[0];
-
-		if($row["class"] !== OperationType::TYPE_CREATION){
-			throw new InvalidArgumentException("The operation is not a creation");
-		}
-		$operation = new CreationOperation($db, $row["id"], $row["time"], $row["type"],
-			yield Account::getAccount($db, $currencyManager, $row["account"]), $row["amount"]);
-		return $operation;
-	}
-
-	protected function __construct(DataBase $db, int $id, int $time, string $type){
-		$this->db = $db;
-		$this->id = $id;
-		$this->time = $time;
-		$this->type = $type;
+	public function getAccountProvider() : AccountProvider{
+		return $this->accountProvider;
 	}
 }

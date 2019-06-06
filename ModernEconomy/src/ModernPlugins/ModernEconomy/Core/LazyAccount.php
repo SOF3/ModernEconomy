@@ -21,18 +21,29 @@
 
 namespace ModernPlugins\ModernEconomy\Core;
 
-use ModernPlugins\ModernEconomy\Utils\DataBase;
+use Generator;
 
-final class CreationOperation extends Operation{
-	use CreationDestructionOperationTrait;
+final class LazyAccount{
+	/** @var AccountProvider */
+	private $accountProvider;
+	/** @var int */
+	private $id;
+	/** @var Account|null */
+	private $instance = null;
 
-	public function __construct(DataBase $db, AccountProvider $accountProvider, int $id, int $time, string $type, int $accountId, int $amount){
-		parent::__construct($db, $accountProvider, $id, $time, $type);
-		$this->accountId = $accountId;
-		$this->amount = $amount;
+	public function __construct(AccountProvider $accountProvider, int $id){
+		$this->accountProvider = $accountProvider;
+		$this->id = $id;
 	}
 
-	protected function asOperation() : Operation{
-		return $this;
+	public function getId() : int{
+		return $this->id;
+	}
+
+	public function getInstance() : Generator{
+		if($this->instance === null){
+			$this->instance = yield $this->accountProvider->getAccount($this->id);
+		}
+		return $this->instance;
 	}
 }
