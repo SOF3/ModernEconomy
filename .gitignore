@@ -8,5 +8,6 @@
 !.idea/modules.xml
 !.idea/php.xml
 !.idea/watcherTasks.xml
+!.idea/.name
 *.phar
 !libs/*
