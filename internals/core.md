@@ -14,7 +14,7 @@ as seen in the \Core\MasterManager class.
 ## Currency
 A currency is a unit for money.
 There is no 1-to-1 mapping between different currencies.
-Exchanging money between two currencies requires an `OPERATION_EXCHANGE` operation.
+Exchanging money between two currencies requires an `OperationType::EXCHANGE` operation.
 All representations of money must contain a currency.
 
 Each currency may contain one or more subcurrencies.
