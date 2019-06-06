@@ -64,6 +64,8 @@ final class Account{
 			"ownerType" => $type,
 			"ownerName" => $name,
 		]);
+		$this->ownerType = $type;
+		$this->ownerName = $name;
 	}
 
 	public function getAccountType() : string{
@@ -76,24 +78,6 @@ final class Account{
 
 	public function getBalance() : int{
 		return $this->balance;
-	}
-
-	public function tryAddBalance(int $amount, int $max = 1 << 31) : Generator{
-		$affectedRows = yield $this->db->executeChange(Queries::CORE_ACCOUNT_TRY_ADD_IF_MAX, [
-			"id" => $this->id,
-			"amount" => $amount,
-			"ifMax" => $max - $amount,
-		]);
-		return $affectedRows > 0;
-	}
-
-	public function trySubtractBalance(int $amount, int $min = 0) : Generator{
-		$affectedRows = yield $this->db->executeChange(Queries::CORE_ACCOUNT_TRY_ADD_IF_MIN, [
-			"id" => $this->id,
-			"amount" => -$amount,
-			"ifMax" => $min + $amount,
-		]);
-		return $affectedRows > 0;
 	}
 
 	public static function getAccount(DataBase $db, CurrencyManager $currencyManager, int $id) : Generator{
