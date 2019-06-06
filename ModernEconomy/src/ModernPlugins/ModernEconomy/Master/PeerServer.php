@@ -21,23 +21,29 @@
 
 namespace ModernPlugins\ModernEconomy\Master;
 
-use pocketmine\event\Event;
+class PeerServer{
+	/** @var string */
+	private $serverId;
+	/** @var int */
+	private $majorVersion;
+	/** @var int */
+	private $minorVersion;
 
-/**
- * This event is called when a new master server is detected.
- *
- * This event is also called when the server starts up without successfully acquiring the master status
- * because of another active master server.
- */
-class MasterChangeEvent extends Event{
-	/** @var PeerServer */
-	private $newMaster;
-
-	public function __construct(PeerServer $newMaster){
-		$this->newMaster = $newMaster;
+	public function __construct(string $serverId, int $majorVersion, int $minorVersion){
+		$this->serverId = $serverId;
+		$this->majorVersion = $majorVersion;
+		$this->minorVersion = $minorVersion;
 	}
 
-	public function getNewMaster() : PeerServer{
-		return $this->newMaster;
+	public function getServerId() : string{
+		return $this->serverId;
+	}
+
+	public function getMajorVersion() : int{
+		return $this->majorVersion;
+	}
+
+	public function getMinorVersion() : int{
+		return $this->minorVersion;
 	}
 }

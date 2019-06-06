@@ -21,29 +21,6 @@
 
 namespace ModernPlugins\ModernEconomy\Core;
 
-class PeerServer{
-	/** @var string */
-	private $serverId;
-	/** @var int */
-	private $majorVersion;
-	/** @var int */
-	private $minorVersion;
+final class TransactionOperation extends Operation{
 
-	public function __construct(string $serverId, int $majorVersion, int $minorVersion){
-		$this->serverId = $serverId;
-		$this->majorVersion = $majorVersion;
-		$this->minorVersion = $minorVersion;
-	}
-
-	public function getServerId() : string{
-		return $this->serverId;
-	}
-
-	public function getMajorVersion() : int{
-		return $this->majorVersion;
-	}
-
-	public function getMinorVersion() : int{
-		return $this->minorVersion;
-	}
 }

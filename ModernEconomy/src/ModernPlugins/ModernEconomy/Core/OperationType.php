@@ -19,25 +19,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Master;
+namespace ModernPlugins\ModernEconomy\Core;
 
-use pocketmine\event\Event;
-
-/**
- * This event is called when a new master server is detected.
- *
- * This event is also called when the server starts up without successfully acquiring the master status
- * because of another active master server.
- */
-class MasterChangeEvent extends Event{
-	/** @var PeerServer */
-	private $newMaster;
-
-	public function __construct(PeerServer $newMaster){
-		$this->newMaster = $newMaster;
-	}
-
-	public function getNewMaster() : PeerServer{
-		return $this->newMaster;
-	}
+final class OperationType{
+	public const TYPE_CREATION = 0;
+	public const TYPE_DESTRUCTION = 1;
+	public const TYPE_TRANSACTION = 2;
+	public const TYPE_EXCHANGE = 3;
 }

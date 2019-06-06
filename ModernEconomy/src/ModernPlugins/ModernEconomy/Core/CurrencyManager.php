@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Core\Currency;
+namespace ModernPlugins\ModernEconomy\Core;
 
 use Generator;
 use InvalidStateException;

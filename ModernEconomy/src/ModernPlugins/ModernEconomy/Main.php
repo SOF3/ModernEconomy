@@ -68,6 +68,8 @@ final class Main extends PluginBase{
 		$sqlFiles = [
 			"core/lock",
 			"core/currency",
+			"core/account",
+			"core/operation",
 		];
 		$sqlMap = ["mysql" => array_map(static function(string $file){
 			return "$file.mysql.sql";

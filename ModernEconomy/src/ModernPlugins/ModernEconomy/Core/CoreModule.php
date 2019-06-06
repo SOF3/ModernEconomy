@@ -24,7 +24,6 @@ namespace ModernPlugins\ModernEconomy\Core;
 use Generator;
 use Logger;
 use ModernPlugins\ModernEconomy\Configuration\Configuration;
-use ModernPlugins\ModernEconomy\Core\Currency\CurrencyManager;
 use ModernPlugins\ModernEconomy\Master\MasterManager;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 use pocketmine\plugin\Plugin;
