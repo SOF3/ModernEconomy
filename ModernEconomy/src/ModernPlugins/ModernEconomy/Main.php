@@ -35,6 +35,7 @@ use function bin2hex;
 use function random_bytes;
 
 /** @noinspection PhpUnused */
+
 final class Main extends PluginBase{
 	public const MAJOR_VERSION = 0;
 	public const MINOR_VERSION = 1;
@@ -71,11 +72,14 @@ final class Main extends PluginBase{
 			"core/account",
 			"core/operation",
 		];
-		$sqlMap = ["mysql" => array_map(static function(string $file){
-			return "$file.mysql.sql";
-		}, $sqlFiles), "sqlite" => array_map(static function(string $file){
-			return "$file.sqlite.sql";
-		}, $sqlFiles)];
+		$sqlMap = [
+			"mysql" => array_map(static function(string $file){
+				return "$file.mysql.sql";
+			}, $sqlFiles),
+//			"sqlite" => array_map(static function(string $file){
+//				return "$file.sqlite.sql";
+//			}, $sqlFiles)
+		];
 		$db = libasynql::create($this, $this->getConfig()->get("database"), $sqlMap);
 		return new DataBase($db);
 	}
@@ -103,9 +107,15 @@ final class Main extends PluginBase{
 	}
 
 	protected function onDisable(){
-		$this->masterManager->shutdown();
-		$this->coreModule->shutdown();
-		$this->db->getConnector()->close();
+		if($this->masterManager !== null){
+			$this->masterManager->shutdown();
+		}
+		if($this->coreModule !== null){
+			$this->coreModule->shutdown();
+		}
+		if($this->db !== null){
+			$this->db->getConnector()->close();
+		}
 	}
 
 	public function getCoreModule() : CoreModule{
