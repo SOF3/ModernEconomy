@@ -58,6 +58,7 @@ final class MasterManager{
 	}
 
 	public function executeInit() : Generator{
+		$this->logger->debug("Initializing");
 		yield $this->connector->executeGeneric(Queries::CORE_LOCK_CREATE);
 		yield $this->connector->executeGeneric(Queries::CORE_LOCK_INIT);
 	}
@@ -71,6 +72,7 @@ final class MasterManager{
 			if($maintained === 0){
 				$this->master = false;
 				(new MasterReleaseEvent)->call();
+				$this->logger->info("Released master status");
 			}
 		}else{
 			/** @var int $acquired */
@@ -91,6 +93,7 @@ final class MasterManager{
 			if($acquired === 1){
 				$this->master = true;
 				(new MasterAcquisitionEvent())->call();
+				$this->logger->info("Acquired master status");
 			}else{
 				$row = yield $this->connector->executeSingleSelect(Queries::CORE_LOCK_QUERY);
 				if($row === null){
@@ -120,6 +123,7 @@ final class MasterManager{
 	}
 
 	public function executeLoop(TaskScheduler $scheduler) : Generator{
+		yield AwaitUtils::sleep($scheduler, 5, AwaitUtils::SECONDS);
 		while(!$this->shutdown){
 			$wait = yield $this->executeIteration();
 			if($wait){
@@ -130,7 +134,6 @@ final class MasterManager{
 
 	public function fetchMasterConfiguration() : Generator{
 		$row = yield $this->connector->executeSingleSelect(Queries::CORE_LOCK_QUERY_CONFIG);
-		var_dump($row);
 		$this->configHash = $row["config_hash"];
 		return unserialize($row["config"], ["allowed_classes" => [Configuration::CONFIG_CLASSES]]);
 	}

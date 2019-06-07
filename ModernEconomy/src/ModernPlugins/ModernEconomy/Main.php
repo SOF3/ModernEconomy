@@ -80,7 +80,7 @@ final class Main extends PluginBase{
 //				return "$file.sqlite.sql";
 //			}, $sqlFiles)
 		];
-		$db = libasynql::create($this, $this->getConfig()->get("database"), $sqlMap);
+		$db = libasynql::create($this, $this->getConfig()->get("database"), $sqlMap, true);
 		return new DataBase($db);
 	}
 
