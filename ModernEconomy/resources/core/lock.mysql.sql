@@ -3,7 +3,7 @@
 -- #    { create
 -- #        * The modernecon_lock table contains a single row that contains the ID of the server that currently acquires the lock.
 CREATE TABLE IF NOT EXISTS modernecon_lock (
-    pk CHAR(1) PRIMARY KEY,
+    pk           BOOL PRIMARY KEY,
     master       CHAR(16)  NOT NULL DEFAULT '',
     majorVersion INT       NOT NULL DEFAULT -1,
     minorVersion INT       NOT NULL DEFAULT -1,

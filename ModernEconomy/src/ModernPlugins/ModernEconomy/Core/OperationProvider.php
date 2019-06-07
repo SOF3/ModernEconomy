@@ -24,6 +24,7 @@ namespace ModernPlugins\ModernEconomy\Core;
 use Generator;
 use InvalidArgumentException;
 use ModernPlugins\ModernEconomy\Generated\Queries;
+use ModernPlugins\ModernEconomy\Main;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 use function assert;
 use function count;
@@ -34,10 +35,12 @@ final class OperationProvider{
 	/** @var AccountProvider */
 	private $accountProvider;
 
-	public static function create(DataBase $db, AccountProvider $accountProvider, bool $creating) : Generator{
-		if($creating){
-			yield from $db->executeGeneric(Queries::CORE_OPERATION_CREATE_INDEX);
-			yield from $db->executeGeneric(Queries::CORE_OPERATION_CREATE_DETAIL);
+	public static function create(DataBase $db, AccountProvider $accountProvider, ?int $dbVersion) : Generator{
+		if($dbVersion !== null){
+			if($dbVersion <= Main::EMPTY_DB_VERSION){
+				yield from $db->executeGeneric(Queries::CORE_OPERATION_CREATE_INDEX);
+				yield from $db->executeGeneric(Queries::CORE_OPERATION_CREATE_DETAIL);
+			}
 		}
 		$operationProvider = new OperationProvider();
 		$operationProvider->db = $db;

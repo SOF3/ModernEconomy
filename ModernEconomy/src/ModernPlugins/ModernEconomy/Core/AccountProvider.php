@@ -23,6 +23,7 @@ namespace ModernPlugins\ModernEconomy\Core;
 
 use Generator;
 use ModernPlugins\ModernEconomy\Generated\Queries;
+use ModernPlugins\ModernEconomy\Main;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 
 final class AccountProvider{
@@ -31,9 +32,11 @@ final class AccountProvider{
 	/** @var CurrencyProvider */
 	private $currencyProvider;
 
-	public static function create(DataBase $db, CurrencyProvider $currencyProvider, bool $creating) : Generator{
-		if($creating){
-			yield from $db->executeGeneric(Queries::CORE_ACCOUNT_CREATE);
+	public static function create(DataBase $db, CurrencyProvider $currencyProvider, ?int $dbVersion) : Generator{
+		if($dbVersion !== null){
+			if($dbVersion <= Main::EMPTY_DB_VERSION){
+				yield from $db->executeGeneric(Queries::CORE_ACCOUNT_CREATE);
+			}
 		}
 
 		$provider = new self;

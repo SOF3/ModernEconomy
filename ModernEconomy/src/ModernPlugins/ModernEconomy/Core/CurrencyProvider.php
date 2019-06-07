@@ -24,6 +24,7 @@ namespace ModernPlugins\ModernEconomy\Core;
 use Generator;
 use InvalidStateException;
 use ModernPlugins\ModernEconomy\Generated\Queries;
+use ModernPlugins\ModernEconomy\Main;
 use ModernPlugins\ModernEconomy\Master\MasterManager;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 
@@ -33,10 +34,12 @@ final class CurrencyProvider{
 	/** @var MasterManager */
 	private $masterManager;
 
-	public static function create(DataBase $db, MasterManager $masterManager, bool $creating) : Generator{
-		if($creating){
-			yield from $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_CURRENCY);
-			yield from $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_SUBCURRENCY);
+	public static function create(DataBase $db, MasterManager $masterManager, ?int $dbVersion) : Generator{
+		if($dbVersion !== null){
+			if($dbVersion <= Main::EMPTY_DB_VERSION){
+				yield from $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_CURRENCY);
+				yield from $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_SUBCURRENCY);
+			}
 		}
 
 		$provider = new self;
