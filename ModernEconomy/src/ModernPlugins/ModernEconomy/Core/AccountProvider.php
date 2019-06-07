@@ -33,7 +33,7 @@ final class AccountProvider{
 
 	public static function create(DataBase $db, CurrencyProvider $currencyProvider, bool $creating) : Generator{
 		if($creating){
-			yield $db->executeGeneric(Queries::CORE_ACCOUNT_CREATE);
+			yield from $db->executeGeneric(Queries::CORE_ACCOUNT_CREATE);
 		}
 
 		$provider = new self;
@@ -43,7 +43,7 @@ final class AccountProvider{
 	}
 
 	public function getAccount(int $id) : Generator{
-		$row = yield $this->db->executeSelect(Queries::CORE_ACCOUNT_GET, [
+		$row = yield from $this->db->executeSingleSelect(Queries::CORE_ACCOUNT_GET, [
 			"id" => $id,
 		]);
 

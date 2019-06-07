@@ -42,6 +42,8 @@ final class CoreModule{
 	private $currencyProvider;
 	/** @var AccountProvider */
 	private $accountProvider;
+	/** @var OperationProvider */
+	private $operationProvider;
 
 	public static function create(Plugin $plugin, Logger $logger, DataBase $db, Configuration $configuration, MasterManager $masterManager, bool $creating) : Generator{
 		$module = new CoreModule();
@@ -50,8 +52,9 @@ final class CoreModule{
 		$module->db = $db;
 		$module->configuration = $configuration;
 
-		$module->currencyProvider = yield CurrencyProvider::create($db, $masterManager, $creating);
-		$module->accountProvider = yield AccountProvider::create($db,$module->currencyProvider,$creating);
+		$module->currencyProvider = yield from CurrencyProvider::create($db, $masterManager, $creating);
+		$module->accountProvider = yield from AccountProvider::create($db,$module->currencyProvider,$creating);
+		$module->operationProvider = yield from OperationProvider::create($db, $module->accountProvider, $creating);
 
 		return $module;
 	}

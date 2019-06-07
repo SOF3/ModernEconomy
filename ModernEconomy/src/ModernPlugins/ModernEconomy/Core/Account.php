@@ -85,7 +85,7 @@ final class Account{
 	}
 
 	public function setOwnerType(string $type, string $name) : Generator{
-		yield $this->accountProvider->getDb()->executeChange(Queries::CORE_ACCOUNT_SET_OWNER, [
+		yield from $this->accountProvider->getDb()->executeChange(Queries::CORE_ACCOUNT_SET_OWNER, [
 			"id" => $this->id,
 			"ownerType" => $type,
 			"ownerName" => $name,
@@ -100,7 +100,7 @@ final class Account{
 
 	public function getCurrency() : Generator{
 		if($this->currency === null){
-			$this->currency = yield $this->accountProvider->getCurrencyProvider()->getCurrency($this->currencyId);
+			$this->currency = yield from $this->accountProvider->getCurrencyProvider()->getCurrency($this->currencyId);
 		}
 		return $this->currency;
 	}

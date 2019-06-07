@@ -42,7 +42,7 @@ final class LazyAccount{
 
 	public function getInstance() : Generator{
 		if($this->instance === null){
-			$this->instance = yield $this->accountProvider->getAccount($this->id);
+			$this->instance = yield from $this->accountProvider->getAccount($this->id);
 		}
 		return $this->instance;
 	}

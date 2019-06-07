@@ -40,11 +40,11 @@ final class TransactionOperation extends Operation{
 	}
 
 	public function getSource() : Generator{
-		return yield $this->source->getInstance();
+		return yield from $this->source->getInstance();
 	}
 
 	public function getTarget() : Generator{
-		return yield $this->target->getInstance();
+		return yield from $this->target->getInstance();
 	}
 
 	public function getAmount() : int{

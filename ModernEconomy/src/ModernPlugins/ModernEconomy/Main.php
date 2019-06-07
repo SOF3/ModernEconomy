@@ -86,11 +86,11 @@ final class Main extends PluginBase{
 
 	private function asyncEnable(Configuration $config) : Generator{
 		$this->masterManager = new MasterManager(new PrefixedLogger($this->getLogger(), "Master"), $this->db, $this->tempServerId);
-		$config = yield $this->syncConfig($config);
+		$config = yield from $this->syncConfig($config);
 
 		$creating = false; // TODO define $creating
 
-		$this->coreModule = yield CoreModule::create(
+		$this->coreModule = yield from CoreModule::create(
 			$this, new PrefixedLogger($this->getLogger(), "Core"),
 			$this->db, $config, $this->masterManager, $creating);
 
@@ -98,22 +98,25 @@ final class Main extends PluginBase{
 	}
 
 	private function syncConfig(Configuration $configuration) : Generator{
-		yield $this->masterManager->executeInit();
-		yield $this->masterManager->executeIteration($configuration);
+		yield from $this->masterManager->executeInit();
+		yield from $this->masterManager->executeIteration($configuration);
 		if($this->masterManager->isMaster()){
 			return $configuration;
 		}
-		return yield $this->masterManager->fetchMasterConfiguration();
+		return yield from $this->masterManager->fetchMasterConfiguration();
 	}
 
 	protected function onDisable(){
-		if($this->masterManager !== null){
-			$this->masterManager->shutdown();
-		}
-		if($this->coreModule !== null){
-			$this->coreModule->shutdown();
-		}
 		if($this->db !== null){
+			Await::f2c(function(){
+				if($this->coreModule !== null){
+					$this->coreModule->shutdown();
+				}
+				if($this->masterManager !== null){
+					yield $this->masterManager->shutdown();
+				}
+			});
+			$this->db->getConnector()->waitAll();
 			$this->db->getConnector()->close();
 		}
 	}

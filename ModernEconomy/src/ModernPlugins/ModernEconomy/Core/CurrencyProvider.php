@@ -35,8 +35,8 @@ final class CurrencyProvider{
 
 	public static function create(DataBase $db, MasterManager $masterManager, bool $creating) : Generator{
 		if($creating){
-			yield $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_CURRENCY);
-			yield $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_SUBCURRENCY);
+			yield from $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_CURRENCY);
+			yield from $db->executeGeneric(Queries::CORE_CURRENCY_CREATE_SUBCURRENCY);
 		}
 
 		$provider = new self;
@@ -46,17 +46,17 @@ final class CurrencyProvider{
 	}
 
 	public function getCurrencyByName(string $name) : Generator{
-		$idRow = yield $this->db->executeSingleSelect(Queries::CORE_CURRENCY_GET_ID_BY_NAME, [
+		$idRow = yield from $this->db->executeSingleSelect(Queries::CORE_CURRENCY_GET_ID_BY_NAME, [
 			"name" => $name,
 		]);
 		if($idRow === null){
 			return null;
 		}
-		return $this->getCurrency($idRow["id"]);
+		return yield from $this->getCurrency($idRow["id"]);
 	}
 
 	public function getCurrency(int $id) : Generator{
-		$currencyRow = yield $this->db->executeSingleSelect(Queries::CORE_CURRENCY_LOAD_CURRENCY, [
+		$currencyRow = yield from $this->db->executeSingleSelect(Queries::CORE_CURRENCY_LOAD_CURRENCY, [
 			"id" => $id,
 		]);
 		if($currencyRow === null){
@@ -64,7 +64,7 @@ final class CurrencyProvider{
 		}
 		$currency = new Currency($currencyRow["id"], $currencyRow["name"]);
 		$subcurrencies = [];
-		foreach(yield $this->db->executeSelect(Queries::CORE_CURRENCY_LOAD_SUBCURRENCY, [
+		foreach(yield from $this->db->executeSelect(Queries::CORE_CURRENCY_LOAD_SUBCURRENCY, [
 			"id" => $id,
 		]) as $row){
 			$subcurrency = new Subcurrency($row["id"], $row["name"], $currency,
@@ -81,18 +81,18 @@ final class CurrencyProvider{
 			throw new InvalidStateException("Currencies can only be created by the master server");
 		}
 
-		$id = yield $this->db->executeInsert(Queries::CORE_CURRENCY_ADD_CURRENCY, [
+		$id = yield from $this->db->executeInsert(Queries::CORE_CURRENCY_ADD_CURRENCY, [
 			"name" => $name,
 		]);
 		$currency = new Currency($id, $name);
 
-		yield $this->createSubcurrency($currency, $subName, $symbolBefore, $symbolAfter, 1);
+		yield from $this->createSubcurrency($currency, $subName, $symbolBefore, $symbolAfter, 1);
 
 		return $currency;
 	}
 
 	public function createSubcurrency(Currency $currency, string $name, string $symbolBefore, string $symbolAfter, int $magnitude) : Generator{
-		$id = yield $this->db->executeInsert(Queries::CORE_CURRENCY_ADD_SUBCURRENCY, [
+		$id = yield from $this->db->executeInsert(Queries::CORE_CURRENCY_ADD_SUBCURRENCY, [
 			"name" => $name,
 			"currency" => $currency->getId(),
 			"symbolBefore" => $symbolBefore,

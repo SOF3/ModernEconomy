@@ -36,8 +36,8 @@ final class OperationProvider{
 
 	public static function create(DataBase $db, AccountProvider $accountProvider, bool $creating) : Generator{
 		if($creating){
-			yield $db->executeGeneric(Queries::CORE_OPERATION_CREATE_INDEX);
-			yield $db->executeGeneric(Queries::CORE_OPERATION_CREATE_DETAIL);
+			yield from $db->executeGeneric(Queries::CORE_OPERATION_CREATE_INDEX);
+			yield from $db->executeGeneric(Queries::CORE_OPERATION_CREATE_DETAIL);
 		}
 		$operationProvider = new OperationProvider();
 		$operationProvider->db = $db;
@@ -46,7 +46,7 @@ final class OperationProvider{
 	}
 
 	public function getCreation(int $id) : Generator{
-		$row = yield $this->db->executeSingleSelect(Queries::CORE_OPERATION_GET_MERGED, [
+		$row = yield from $this->db->executeSingleSelect(Queries::CORE_OPERATION_GET_MERGED, [
 			"id" => $id,
 		]);
 		if($row === null){
@@ -62,7 +62,7 @@ final class OperationProvider{
 	}
 
 	public function getDestruction(int $id) : Generator{
-		$row = yield $this->db->executeSingleSelect(Queries::CORE_OPERATION_GET_MERGED, [
+		$row = yield from $this->db->executeSingleSelect(Queries::CORE_OPERATION_GET_MERGED, [
 			"id" => $id,
 		]);
 		if($row === null){
@@ -78,7 +78,7 @@ final class OperationProvider{
 	}
 
 	public function getTransaction(int $id) : Generator{
-		$rows = yield $this->db->executeSelect(Queries::CORE_OPERATION_GET_MERGED, [
+		$rows = yield from $this->db->executeSelect(Queries::CORE_OPERATION_GET_MERGED, [
 			"id" => $id,
 		]);
 		if($rows[0]["class"] !== OperationType::TYPE_TRANSACTION){

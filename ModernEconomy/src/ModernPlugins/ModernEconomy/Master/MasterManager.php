@@ -59,14 +59,14 @@ final class MasterManager{
 
 	public function executeInit() : Generator{
 		$this->logger->debug("Initializing");
-		yield $this->connector->executeGeneric(Queries::CORE_LOCK_CREATE);
-		yield $this->connector->executeGeneric(Queries::CORE_LOCK_INIT);
+		yield from $this->connector->executeGeneric(Queries::CORE_LOCK_CREATE);
+		yield from $this->connector->executeGeneric(Queries::CORE_LOCK_INIT);
 	}
 
 	public function executeIteration(?Configuration $configuration = null) : Generator{
 		if($this->master){
 			/** @var int $maintained */
-			$maintained = yield $this->connector->executeChange(Queries::CORE_LOCK_MAINTAIN, [
+			$maintained = yield from $this->connector->executeChange(Queries::CORE_LOCK_MAINTAIN, [
 				"serverId" => $this->serverId,
 			]);
 			if($maintained === 0){
@@ -77,14 +77,14 @@ final class MasterManager{
 		}else{
 			/** @var int $acquired */
 			if($configuration !== null){
-				$acquired = yield $this->connector->executeChange(Queries::CORE_LOCK_ACQUIRE_WITH_CONFIG, [
+				$acquired = yield from $this->connector->executeChange(Queries::CORE_LOCK_ACQUIRE_WITH_CONFIG, [
 					"serverId" => $this->serverId,
 					"majorVersion" => Main::MAJOR_VERSION,
 					"minorVersion" => Main::MINOR_VERSION,
 					"config" => serialize($configuration),
 				]);
 			}else{
-				$acquired = yield $this->connector->executeChange(Queries::CORE_LOCK_ACQUIRE, [
+				$acquired = yield from $this->connector->executeChange(Queries::CORE_LOCK_ACQUIRE, [
 					"serverId" => $this->serverId,
 					"majorVersion" => Main::MAJOR_VERSION,
 					"minorVersion" => Main::MINOR_VERSION,
@@ -95,7 +95,7 @@ final class MasterManager{
 				(new MasterAcquisitionEvent())->call();
 				$this->logger->info("Acquired master status");
 			}else{
-				$row = yield $this->connector->executeSingleSelect(Queries::CORE_LOCK_QUERY);
+				$row = yield from $this->connector->executeSingleSelect(Queries::CORE_LOCK_QUERY);
 				if($row === null){
 					// This would happen if lock.acquire was executed more than 10 seconds ago,
 					// and the master server lost its master status just after that
@@ -123,19 +123,19 @@ final class MasterManager{
 	}
 
 	public function executeLoop(TaskScheduler $scheduler) : Generator{
-		yield AwaitUtils::sleep($scheduler, 5, AwaitUtils::SECONDS);
+		yield from AwaitUtils::sleep($scheduler, 5, AwaitUtils::SECONDS);
 		while(!$this->shutdown){
-			$wait = yield $this->executeIteration();
+			$wait = yield from $this->executeIteration();
 			if($wait){
-				yield AwaitUtils::sleep($scheduler, 30, AwaitUtils::SECONDS);
+				yield from AwaitUtils::sleep($scheduler, 30, AwaitUtils::SECONDS);
 			}
 		}
 	}
 
 	public function fetchMasterConfiguration() : Generator{
-		$row = yield $this->connector->executeSingleSelect(Queries::CORE_LOCK_QUERY_CONFIG);
+		$row = yield from $this->connector->executeSingleSelect(Queries::CORE_LOCK_QUERY_CONFIG);
 		$this->configHash = $row["config_hash"];
-		return unserialize($row["config"], ["allowed_classes" => [Configuration::CONFIG_CLASSES]]);
+		return unserialize($row["config"], ["allowed_classes" => Configuration::CONFIG_CLASSES]);
 	}
 
 	public function isMaster() : bool{
@@ -154,7 +154,7 @@ final class MasterManager{
 	public function shutdown() : Generator{
 		$this->shutdown = true;
 		if($this->master){
-			$released = yield $this->connector->executeChange(Queries::CORE_LOCK_RELEASE, [
+			$released = yield from $this->connector->executeChange(Queries::CORE_LOCK_RELEASE, [
 				"serverId" => $this->serverId,
 			]);
 			if($released){

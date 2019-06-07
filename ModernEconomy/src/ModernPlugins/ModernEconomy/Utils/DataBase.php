@@ -73,6 +73,6 @@ final class DataBase{
 	}
 
 	public function executeSingleSelect(string $queryName, array $args = []) : Generator{
-		return (yield $this->executeSelect($queryName,$args))[0] ?? null;
+		return (yield from $this->executeSelect($queryName,$args))[0] ?? null;
 	}
 }

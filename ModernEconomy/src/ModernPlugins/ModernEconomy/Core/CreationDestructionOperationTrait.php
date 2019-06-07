@@ -34,7 +34,7 @@ trait CreationDestructionOperationTrait{
 
 	public function getAccount() : Generator{
 		if($this->account === null){
-			$this->account = yield $this->asOperation()->getAccountProvider()->getAccount($this->accountId);
+			$this->account = yield from $this->asOperation()->getAccountProvider()->getAccount($this->accountId);
 		}
 		return $this->account;
 	}
