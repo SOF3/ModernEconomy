@@ -90,7 +90,7 @@ final class Main extends PluginBase{
 
 		$creating = false; // TODO define $creating
 
-		$this->coreModule = CoreModule::create(
+		$this->coreModule = yield CoreModule::create(
 			$this, new PrefixedLogger($this->getLogger(), "Core"),
 			$this->db, $config, $this->masterManager, $creating);
 

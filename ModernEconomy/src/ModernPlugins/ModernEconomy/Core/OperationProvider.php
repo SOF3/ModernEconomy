@@ -46,13 +46,12 @@ final class OperationProvider{
 	}
 
 	public function getCreation(int $id) : Generator{
-		$rows = yield $this->db->executeSelect(Queries::CORE_OPERATION_GET_MERGED, [
+		$row = yield $this->db->executeSingleSelect(Queries::CORE_OPERATION_GET_MERGED, [
 			"id" => $id,
 		]);
-		if(empty($rows)){
+		if($row === null){
 			return null;
 		}
-		$row = $rows[0];
 
 		if($row["class"] !== OperationType::TYPE_CREATION){
 			throw new InvalidArgumentException("The operation is not a creation");
@@ -63,13 +62,12 @@ final class OperationProvider{
 	}
 
 	public function getDestruction(int $id) : Generator{
-		$rows = yield $this->db->executeSelect(Queries::CORE_OPERATION_GET_MERGED, [
+		$row = yield $this->db->executeSingleSelect(Queries::CORE_OPERATION_GET_MERGED, [
 			"id" => $id,
 		]);
-		if(empty($rows)){
+		if($row === null){
 			return null;
 		}
-		$row = $rows[0];
 
 		if($row["class"] !== OperationType::TYPE_DESTRUCTION){
 			throw new InvalidArgumentException("The operation is not a destruction");

@@ -46,20 +46,22 @@ final class CurrencyProvider{
 	}
 
 	public function getCurrencyByName(string $name) : Generator{
-		$idRows = yield $this->db->executeSelect(Queries::CORE_CURRENCY_GET_ID_BY_NAME, [
+		$idRow = yield $this->db->executeSingleSelect(Queries::CORE_CURRENCY_GET_ID_BY_NAME, [
 			"name" => $name,
 		]);
-		return $this->getCurrency($idRows[0]["id"]);
+		if($idRow === null){
+			return null;
+		}
+		return $this->getCurrency($idRow["id"]);
 	}
 
 	public function getCurrency(int $id) : Generator{
-		$rows = yield $this->db->executeSelect(Queries::CORE_CURRENCY_LOAD_CURRENCY, [
+		$currencyRow = yield $this->db->executeSingleSelect(Queries::CORE_CURRENCY_LOAD_CURRENCY, [
 			"id" => $id,
 		]);
-		if(empty($rows)){
+		if($currencyRow === null){
 			return null;
 		}
-		$currencyRow = $rows[0];
 		$currency = new Currency($currencyRow["id"], $currencyRow["name"]);
 		$subcurrencies = [];
 		foreach(yield $this->db->executeSelect(Queries::CORE_CURRENCY_LOAD_SUBCURRENCY, [

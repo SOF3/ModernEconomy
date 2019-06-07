@@ -34,7 +34,7 @@ final class AwaitUtils{
 
 	public static function sleep(TaskScheduler $scheduler, int $amount, int $unit = self::TICKS) : Generator{
 		$callback = yield;
-		$scheduler->scheduleDelayedTask(new ClosureTask(static function() use ($callback){
+		$scheduler->scheduleDelayedTask(new ClosureTask(static function() use ($callback): void{
 			$callback();
 		}), $amount * $unit);
 		yield Await::ONCE;

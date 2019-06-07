@@ -136,7 +136,7 @@ final class Queries{
 	 * The configuration is not updated. All servers shall continue to use the old configuration.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/lock.mysql.sql:35
+	 * - resources/core/lock.mysql.sql:37
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:minorVersion</code> int, required in lock.mysql.sql
@@ -153,7 +153,7 @@ final class Queries{
 	 * Successful acquisition will also modify the config.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/lock.mysql.sql:51
+	 * - resources/core/lock.mysql.sql:53
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:minorVersion</code> int, required in lock.mysql.sql
@@ -169,7 +169,7 @@ final class Queries{
 	 * The modernecon_lock table contains a single row that contains the ID of the server that currently acquires the lock.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/lock.mysql.sql:12
+	 * - resources/core/lock.mysql.sql:13
 	 */
 	public const CORE_LOCK_CREATE = "core.lock.create";
 
@@ -179,7 +179,7 @@ final class Queries{
 	 * Initializes the table to contain exactly one null row with a safe value.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/lock.mysql.sql:17
+	 * - resources/core/lock.mysql.sql:19
 	 */
 	public const CORE_LOCK_INIT = "core.lock.init";
 
@@ -193,7 +193,7 @@ final class Queries{
 	 * `affectedRows == 0` implies that, for some reason, the master server changed.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/lock.mysql.sql:70
+	 * - resources/core/lock.mysql.sql:72
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:serverId</code> string, required in lock.mysql.sql
@@ -210,7 +210,7 @@ final class Queries{
 	 * The config is not directly fetched, while the md5 hash of the config is fetched
 	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/lock.mysql.sql:80
+	 * - resources/core/lock.mysql.sql:82
 	 */
 	public const CORE_LOCK_QUERY = "core.lock.query";
 
@@ -220,7 +220,7 @@ final class Queries{
 	 * Downloads the latest configuration.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/lock.mysql.sql:86
+	 * - resources/core/lock.mysql.sql:88
 	 */
 	public const CORE_LOCK_QUERY_CONFIG = "core.lock.query-config";
 
@@ -231,7 +231,7 @@ final class Queries{
 	 * Should be executed by the master server before its shutdown.
 	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/lock.mysql.sql:59
+	 * - resources/core/lock.mysql.sql:61
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:serverId</code> string, required in lock.mysql.sql

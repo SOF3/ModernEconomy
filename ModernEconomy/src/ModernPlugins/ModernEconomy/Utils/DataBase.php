@@ -71,4 +71,8 @@ final class DataBase{
 		$this->connector->executeSelect($queryName, $args, yield, yield Await::REJECT);
 		return yield Await::ONCE;
 	}
+
+	public function executeSingleSelect(string $queryName, array $args = []) : Generator{
+		return (yield $this->executeSelect($queryName,$args))[0] ?? null;
+	}
 }

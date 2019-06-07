@@ -30,7 +30,6 @@ use ModernPlugins\ModernEconomy\Utils\AwaitUtils;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
-use function count;
 use function serialize;
 use function unserialize;
 
@@ -93,15 +92,14 @@ final class MasterManager{
 				$this->master = true;
 				(new MasterAcquisitionEvent())->call();
 			}else{
-				$rows = yield $this->connector->executeSelect(Queries::CORE_LOCK_QUERY);
-				if(count($rows) === 0){
+				$row = yield $this->connector->executeSingleSelect(Queries::CORE_LOCK_QUERY);
+				if($row === null){
 					// This would happen if lock.acquire was executed more than 10 seconds ago,
 					// and the master server lost its master status just after that
 					// Let's continue to the next loop immediately so that we can try to acquire the lock again
 					$this->logger->debug("Master acquisition failed but cannot query master successfully. MySQL lag?");
 					return false;
 				}
-				$row = $rows[0];
 				if($this->currentMaster === null || $row["master"] !== $this->currentMaster->getServerId()){
 					$this->currentMaster = new PeerServer($row["master"], $row["majorVersion"], $row["minorVersion"]);
 					if(!self::isVersionCompatible($this->currentMaster->getMajorVersion(), $this->currentMaster->getMinorVersion())){
@@ -131,7 +129,8 @@ final class MasterManager{
 	}
 
 	public function fetchMasterConfiguration() : Generator{
-		$row = yield $this->connector->executeSelect(Queries::CORE_LOCK_QUERY_CONFIG);
+		$row = yield $this->connector->executeSingleSelect(Queries::CORE_LOCK_QUERY_CONFIG);
+		var_dump($row);
 		$this->configHash = $row["config_hash"];
 		return unserialize($row["config"], ["allowed_classes" => [Configuration::CONFIG_CLASSES]]);
 	}

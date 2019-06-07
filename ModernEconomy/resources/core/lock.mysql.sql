@@ -3,17 +3,19 @@
 -- #    { create
 -- #        * The modernecon_lock table contains a single row that contains the ID of the server that currently acquires the lock.
 CREATE TABLE IF NOT EXISTS modernecon_lock (
-	master       CHAR(16),
-	majorVersion INT  NOT NULL,
-	minorVersion INT  NOT NULL,
-	config       TEXT NOT NULL,
-	lastUpdate   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    pk CHAR(1) PRIMARY KEY,
+    master       CHAR(16)  NOT NULL DEFAULT '',
+    majorVersion INT       NOT NULL DEFAULT -1,
+    minorVersion INT       NOT NULL DEFAULT -1,
+    config       TEXT      NOT NULL,
+    lastUpdate   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 -- #    }
 -- #    { init
 -- #        * Initializes the table to contain exactly one null row with a safe value.
-INSERT INTO modernecon_lock (master, config, lastUpdate)
-VALUES ('', '', DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY));
+INSERT INTO modernecon_lock (pk, config, lastUpdate)
+VALUES (1, config, DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY))
+ON DUPLICATE KEY UPDATE pk = 1;
 -- #    }
 -- #    { acquire
 -- #        :serverId string
