@@ -8,7 +8,7 @@ CREATE TABLE modernecon_account (
     accountType VARCHAR(255) NOT NULL,
     currency    INT          NOT NULL,
     balance     BIGINT       NOT NULL,
-    lastAccess  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    lastAccess  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     KEY (ownerType, ownerName),
     KEY (accountType),
     FOREIGN KEY (currency) REFERENCES modernecon_currency(id)

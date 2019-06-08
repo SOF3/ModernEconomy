@@ -4,7 +4,7 @@
 -- #        { index
 CREATE TABLE modernecon_operation_index (
     id    INT PRIMARY KEY AUTO_INCREMENT,
-    time  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    time  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     class SMALLINT     NOT NULL,
     type  VARCHAR(255) NOT NULL,
     INDEX (type, time)

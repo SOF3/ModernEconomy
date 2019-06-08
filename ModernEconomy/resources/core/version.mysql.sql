@@ -1,7 +1,7 @@
 -- #!mysql
 -- #{ core.version
 -- #    { create
-CREATE TABLE modernecon_version (
+CREATE TABLE IF NOT EXISTS modernecon_version (
     pk       BOOL PRIMARY KEY,
     version  INT,
     updating BOOL

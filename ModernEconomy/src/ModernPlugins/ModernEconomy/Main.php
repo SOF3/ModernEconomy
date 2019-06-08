@@ -139,7 +139,7 @@ final class Main extends PluginBase{
 		yield from $this->db->executeGeneric(Queries::CORE_VERSION_CREATE);
 		yield from $this->db->executeGeneric(Queries::CORE_VERSION_INIT);
 
-		$row = $this->db->executeSingleSelect(Queries::CORE_VERSION_QUERY);
+		$row = yield from $this->db->executeSingleSelect(Queries::CORE_VERSION_QUERY);
 		if($row["updating"]){
 			throw new RuntimeException("Cannot use database because last migration crashed. Please reset the database.");
 		}
@@ -160,8 +160,10 @@ final class Main extends PluginBase{
 			$this->getLogger()->warning("Migrating database to a newer version. This may not be reversible. Consider creating a backup before migration.");
 			$this->getLogger()->warning("Migration will start in 10 seconds. Type Ctrl-C to stop migration and backup first.");
 			sleep(10);
+		}else{
+			$this->getLogger()->info("Initializing database for the first time.");
 		}
-		$changed = $this->db->executeChange(Queries::CORE_VERSION_START_UPDATE, [
+		$changed = yield from $this->db->executeChange(Queries::CORE_VERSION_START_UPDATE, [
 			"version" => self::DB_VERSION,
 		]);
 		if($changed === 0){
