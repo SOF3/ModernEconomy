@@ -1,1 +1,3 @@
-# ModernEconomy user guide
+---
+title: ModernEconomy User Guide
+---
