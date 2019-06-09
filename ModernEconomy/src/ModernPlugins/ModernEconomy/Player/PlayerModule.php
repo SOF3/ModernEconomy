@@ -19,17 +19,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Core;
+namespace ModernPlugins\ModernEconomy\Player;
 
 use Generator;
 use Logger;
 use ModernPlugins\ModernEconomy\Configuration\Configuration;
+use ModernPlugins\ModernEconomy\Core\CoreModule;
 use ModernPlugins\ModernEconomy\DataBaseMigration;
-use ModernPlugins\ModernEconomy\Master\MasterManager;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 use pocketmine\plugin\Plugin;
 
-final class CoreModule{
+final class PlayerModule{
 	/** @var Plugin */
 	private $plugin;
 	/** @var Logger */
@@ -38,38 +38,25 @@ final class CoreModule{
 	private $db;
 	/** @var Configuration */
 	private $configuration;
+	/** @var CoreModule */
+	private $coreModule;
 
-	/** @var CurrencyProvider */
-	private $currencyProvider;
-	/** @var AccountProvider */
-	private $accountProvider;
-	/** @var OperationProvider */
-	private $operationProvider;
+	public static function create(Plugin $plugin, Logger $logger, DataBase $db, Configuration $configuration, CoreModule $coreModule, ?DataBaseMigration $migration) : Generator{
+		false && yield;
 
-	public static function create(Plugin $plugin, Logger $logger, DataBase $db, Configuration $configuration, MasterManager $masterManager, ?DataBaseMigration $migration) : Generator{
-		$module = new CoreModule();
+		if($migration !== null){
+			if($migration->getFromVersion() <= DataBaseMigration::EMPTY_MIGRATE_VERSION){
+
+			}
+		}
+
+		$module = new PlayerModule;
 		$module->plugin = $plugin;
 		$module->logger = $logger;
 		$module->db = $db;
 		$module->configuration = $configuration;
-
-		$module->currencyProvider = yield from CurrencyProvider::create($db, $masterManager, $migration);
-		$module->accountProvider = yield from AccountProvider::create($db, $module->currencyProvider, $migration);
-		$module->operationProvider = yield from OperationProvider::create($db, $module->accountProvider, $migration);
-
+		$module->coreModule = $coreModule;
 		return $module;
-	}
-
-	public function getCurrencyProvider() : CurrencyProvider{
-		return $this->currencyProvider;
-	}
-
-	public function getAccountProvider() : AccountProvider{
-		return $this->accountProvider;
-	}
-
-	public function getOperationProvider() : OperationProvider{
-		return $this->operationProvider;
 	}
 
 	public function shutdown() : Generator{

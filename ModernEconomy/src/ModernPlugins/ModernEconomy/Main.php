@@ -25,9 +25,11 @@ use Generator;
 use ModernPlugins\ModernEconomy\Configuration\Configuration;
 use ModernPlugins\ModernEconomy\Core\CoreModule;
 use ModernPlugins\ModernEconomy\Master\MasterManager;
+use ModernPlugins\ModernEconomy\Player\PlayerModule;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 use pocketmine\plugin\PluginBase;
 use pocketmine\plugin\PluginException;
+use pocketmine\utils\Config;
 use poggit\libasynql\libasynql;
 use PrefixedLogger;
 use SOFe\AwaitGenerator\Await;
@@ -65,11 +67,13 @@ final class Main extends PluginBase{
 	private $masterManager;
 	/** @var CoreModule */
 	private $coreModule;
+	/** @var PlayerModule|null */
+	private $playerModule;
 
 	public function onEnable() : void{
 		$this->saveDefaultConfig();
-		$configuration = new Configuration();
-		$configuration->import($this->getConfig());
+		$this->saveResource("shared.yml");
+		$configuration = Configuration::create(new Config($this->getDataFolder() . "shared.yml"), $this->createLogger("Configuration"));
 
 		$this->tempServerId = bin2hex(random_bytes(8));
 		$this->db = $this->createDb();
@@ -108,6 +112,7 @@ final class Main extends PluginBase{
 
 	private function asyncEnable(Configuration $config) : Generator{
 		$this->masterManager = new MasterManager($this->createLogger("Master"), $this->db, $this->tempServerId);
+		/** @var Configuration $config */
 		$config = yield from $this->syncConfig($config);
 
 		/** @var DataBaseMigration $migration */
@@ -115,6 +120,10 @@ final class Main extends PluginBase{
 
 		$this->coreModule = yield from CoreModule::create($this, $this->createLogger("Core"),
 			$this->db, $config, $this->masterManager, $migration);
+		if($config->getPlayerConfiguration()->isEnabled()){
+			$this->playerModule = yield from PlayerModule::create($this, $this->createLogger("Player"),
+				$this->db, $config, $this->coreModule, $migration);
+		}
 
 		if($migration !== null){
 			yield from $migration->complete();
@@ -139,11 +148,14 @@ final class Main extends PluginBase{
 	protected function onDisable(){
 		if($this->db !== null){
 			Await::f2c(function(){
+				if($this->playerModule !== null){
+					yield from $this->playerModule->shutdown();
+				}
 				if($this->coreModule !== null){
-					$this->coreModule->shutdown();
+					yield from $this->coreModule->shutdown();
 				}
 				if($this->masterManager !== null){
-					yield $this->masterManager->shutdown();
+					yield from $this->masterManager->shutdown();
 				}
 			});
 			$this->db->getConnector()->waitAll();
@@ -151,7 +163,18 @@ final class Main extends PluginBase{
 		}
 	}
 
+	public function getMasterManager() : MasterManager{
+		return $this->masterManager;
+	}
+
 	public function getCoreModule() : CoreModule{
 		return $this->coreModule;
+	}
+
+	/**
+	 * @return PlayerModule|null
+	 */
+	public function getPlayerModule() : ?PlayerModule{
+		return $this->playerModule;
 	}
 }

@@ -1,4 +1,7 @@
-# Core Module
+---
+title: Core Module
+---
+
 ## Master acquisition
 In a network of servers running ModernEconomy, there needs to be a "master" server that determines any race conditions
 and perform run-once operations.
