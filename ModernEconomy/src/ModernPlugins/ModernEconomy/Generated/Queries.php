@@ -260,32 +260,55 @@ final class Queries{
 	public const CORE_OPERATION_GET_MERGED = "core.operation.get-merged";
 
 	/**
+	 * <i>(Description from resources/core/version.mysql.sql)</i>
+	 *
+	 * The modernecon_version table is only to be used by the master server after its acquisition of master status
+	 * This table assists the handover of master status along with plugin updates.
+	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/version.mysql.sql:9
+	 * - resources/core/version.mysql.sql:11
 	 */
 	public const CORE_VERSION_CREATE = "core.version.create";
 
 	/**
+	 * <i>(Description from resources/core/version.mysql.sql)</i>
+	 *
+	 * Releases the update lock.
+	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/version.mysql.sql:29
+	 * - resources/core/version.mysql.sql:37
 	 */
 	public const CORE_VERSION_END_UPDATE = "core.version.end-update";
 
 	/**
+	 * <i>(Description from resources/core/version.mysql.sql)</i>
+	 *
+	 * Populates the table with an initial value.
+	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/version.mysql.sql:14
+	 * - resources/core/version.mysql.sql:17
 	 */
 	public const CORE_VERSION_INIT = "core.version.init";
 
 	/**
+	 * <i>(Description from resources/core/version.mysql.sql)</i>
+	 *
+	 * Checks the current version of the database.
+	 * updating = 1 implies that the previous upgrade crashed in the middle.
+	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/version.mysql.sql:18
+	 * - resources/core/version.mysql.sql:23
 	 */
 	public const CORE_VERSION_QUERY = "core.version.query";
 
 	/**
+	 * <i>(Description from resources/core/version.mysql.sql)</i>
+	 *
+	 * Tries to acquire the update lock.
+	 * affected_rows = 0 implies that the update lock has been acquired by something else.
+	 *
 	 * <h4>Declared in:</h4>
-	 * - resources/core/version.mysql.sql:24
+	 * - resources/core/version.mysql.sql:31
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:version</code> int, required in version.mysql.sql

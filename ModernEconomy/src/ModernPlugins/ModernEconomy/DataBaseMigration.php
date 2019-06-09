@@ -26,14 +26,14 @@ use InvalidStateException;
 use Logger;
 use ModernPlugins\ModernEconomy\Generated\Queries;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
-use RuntimeException;
+use pocketmine\utils\TextFormat;
 use function sleep;
 
 final class DataBaseMigration{
 	/**
 	 * This number is the absolute database version number used to calculate required database structure changes
 	 */
-	public const MIGRATE_VERSION = 1;
+	public const TARGET_MIGRATE_VERSION = 1;
 	/**
 	 * This number is the minimum database version number supported for migration.
 	 */
@@ -54,21 +54,21 @@ final class DataBaseMigration{
 
 		$row = yield from $db->executeSingleSelect(Queries::CORE_VERSION_QUERY);
 		if($row["updating"]){
-			throw new RuntimeException("Cannot use database because last migration crashed. Please reset the database.");
+			throw new UserFriendlyException("Cannot use database because last migration crashed. Database cannot recover automatically. If you want to ask help for data recovery, please show the results of the query " . TextFormat::AQUA . "SELECT * FROM information_schema.columns WHERE table_name LIKE 'modernecon_%';" . TextFormat::RED);
 		}
 
 		$version = $row["version"];
-		if($version > self::MIGRATE_VERSION){
-			throw new RuntimeException("Cannot use database with an old version of ModernEconomy after migration to a newer version. Consider rolling back the database if you need to use the old version.");
+		if($version > self::TARGET_MIGRATE_VERSION){
+			throw new UserFriendlyException("Cannot use database with an old version of ModernEconomy after migration to a newer version. Consider rolling back the database if you need to use the old version.");
 		}
 
-		if($version === self::MIGRATE_VERSION){
+		if($version === self::TARGET_MIGRATE_VERSION){
 			return null;
 		}
 
 		if($version !== -1){
 			if($version < self::MIN_MIGRATE_VERSION){
-				throw new RuntimeException("The database is too old to migrate. You have to install an older version of ModernEconomy to migrate this database, or reset everything. See the user guide for version details.");
+				throw new UserFriendlyException("The database is too old to migrate. You have to install an older version of ModernEconomy to migrate this database, or reset everything. See the user guide for version details. (Required transition: $version -> " . self::TARGET_MIGRATE_VERSION . ")");
 			}
 			$logger->warning("Migrating database to a newer version. This may not be reversible. Consider creating a backup before migration.");
 			$logger->warning("Migration will start in 10 seconds. Type Ctrl-C to stop migration and backup first.");
@@ -77,10 +77,10 @@ final class DataBaseMigration{
 			$logger->info("Initializing database for the first time.");
 		}
 		$changed = yield from $db->executeChange(Queries::CORE_VERSION_START_UPDATE, [
-			"version" => self::MIGRATE_VERSION,
+			"version" => self::TARGET_MIGRATE_VERSION,
 		]);
 		if($changed === 0){
-			throw new RuntimeException("Failed to acquire the lock for database migration.");
+			throw new InvalidStateException("Failed to acquire the lock for database migration.");
 		}
 
 		$migration = new DataBaseMigration;

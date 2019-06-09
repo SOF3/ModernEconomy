@@ -19,10 +19,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Configuration;
+namespace ModernPlugins\ModernEconomy;
 
-use ModernPlugins\ModernEconomy\UserFriendlyException;
+use Exception;
 
-class ConfigurationException extends UserFriendlyException{
+class UserFriendlyException extends Exception{
 
 }

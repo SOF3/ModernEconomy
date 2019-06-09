@@ -22,13 +22,12 @@
 namespace ModernPlugins\ModernEconomy;
 
 use Generator;
-use InvalidStateException;
 use ModernPlugins\ModernEconomy\Configuration\Configuration;
 use ModernPlugins\ModernEconomy\Core\CoreModule;
-use ModernPlugins\ModernEconomy\Generated\Queries;
 use ModernPlugins\ModernEconomy\Master\MasterManager;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 use pocketmine\plugin\PluginBase;
+use pocketmine\plugin\PluginException;
 use poggit\libasynql\libasynql;
 use PrefixedLogger;
 use SOFe\AwaitGenerator\Await;
@@ -75,9 +74,22 @@ final class Main extends PluginBase{
 		$this->tempServerId = bin2hex(random_bytes(8));
 		$this->db = $this->createDb();
 
-		Await::g2c($this->asyncEnable($configuration));
+		/** @var UserFriendlyException|null $error */
+		$error = null;
+		Await::g2c($this->asyncEnable($configuration), null, [
+			UserFriendlyException::class => static function(UserFriendlyException $ex) use (&$error) : void{
+				$error = $ex;
+			},
+		]);
 
 		$this->db->getConnector()->waitAll();
+		if($error !== null){
+			$message = $error->getMessage();
+			$this->getLogger()->warning("A problem occurred and prevented ModernEconomy from starting:");
+			$this->getLogger()->critical($message);
+			throw new PluginException("ModernEconomy failed to start (see message above)");
+		}
+
 		Await::g2c($this->masterManager->executeLoop($this->getScheduler()));
 	}
 
