@@ -23,8 +23,8 @@ namespace ModernPlugins\ModernEconomy\Core;
 
 use Generator;
 use InvalidArgumentException;
+use ModernPlugins\ModernEconomy\DataBaseMigration;
 use ModernPlugins\ModernEconomy\Generated\Queries;
-use ModernPlugins\ModernEconomy\Main;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 use function assert;
 use function count;
@@ -35,9 +35,9 @@ final class OperationProvider{
 	/** @var AccountProvider */
 	private $accountProvider;
 
-	public static function create(DataBase $db, AccountProvider $accountProvider, ?int $dbVersion) : Generator{
-		if($dbVersion !== null){
-			if($dbVersion <= Main::EMPTY_DB_VERSION){
+	public static function create(DataBase $db, AccountProvider $accountProvider, ?DataBaseMigration $migration) : Generator{
+		if($migration !== null){
+			if($migration->getFromVersion() <= DataBaseMigration::EMPTY_MIGRATE_VERSION){
 				yield from $db->executeGeneric(Queries::CORE_OPERATION_CREATE_INDEX);
 				yield from $db->executeGeneric(Queries::CORE_OPERATION_CREATE_DETAIL);
 			}

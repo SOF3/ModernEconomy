@@ -24,6 +24,7 @@ namespace ModernPlugins\ModernEconomy\Core;
 use Generator;
 use Logger;
 use ModernPlugins\ModernEconomy\Configuration\Configuration;
+use ModernPlugins\ModernEconomy\DataBaseMigration;
 use ModernPlugins\ModernEconomy\Master\MasterManager;
 use ModernPlugins\ModernEconomy\Utils\DataBase;
 use pocketmine\plugin\Plugin;
@@ -45,16 +46,16 @@ final class CoreModule{
 	/** @var OperationProvider */
 	private $operationProvider;
 
-	public static function create(Plugin $plugin, Logger $logger, DataBase $db, Configuration $configuration, MasterManager $masterManager, ?int $dbVersion) : Generator{
+	public static function create(Plugin $plugin, Logger $logger, DataBase $db, Configuration $configuration, MasterManager $masterManager, ?DataBaseMigration $migration) : Generator{
 		$module = new CoreModule();
 		$module->plugin = $plugin;
 		$module->logger = $logger;
 		$module->db = $db;
 		$module->configuration = $configuration;
 
-		$module->currencyProvider = yield from CurrencyProvider::create($db, $masterManager, $dbVersion);
-		$module->accountProvider = yield from AccountProvider::create($db, $module->currencyProvider, $dbVersion);
-		$module->operationProvider = yield from OperationProvider::create($db, $module->accountProvider, $dbVersion);
+		$module->currencyProvider = yield from CurrencyProvider::create($db, $masterManager, $migration);
+		$module->accountProvider = yield from AccountProvider::create($db, $module->currencyProvider, $migration);
+		$module->operationProvider = yield from OperationProvider::create($db, $module->accountProvider, $migration);
 
 		return $module;
 	}
