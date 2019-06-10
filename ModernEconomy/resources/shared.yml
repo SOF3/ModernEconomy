@@ -10,6 +10,5 @@
 ### Reference: https://modernplugins.github.io/ModernEconomy/users/player
 player:
   # Whether to enable the player module.
-  # Please see the
   enabled: true
 
