@@ -35,7 +35,9 @@ use PrefixedLogger;
 use SOFe\AwaitGenerator\Await;
 use function array_map;
 use function bin2hex;
+use function file_get_contents;
 use function random_bytes;
+use function yaml_parse;
 
 /** @noinspection PhpUnused */
 
@@ -71,7 +73,7 @@ final class Main extends PluginBase{
 	private $playerModule;
 
 	public function onEnable() : void{
-		$this->saveDefaultConfig();
+		$this->saveResource("database.yml");
 		$this->saveResource("shared.yml");
 		$configuration = Configuration::create(new Config($this->getDataFolder() . "shared.yml"), $this->createLogger("Configuration"));
 
@@ -106,7 +108,7 @@ final class Main extends PluginBase{
 //				return "$file.sqlite.sql";
 //			}, self::SQL_FILES)
 		];
-		$db = libasynql::create($this, $this->getConfig()->get("database"), $sqlMap, true);
+		$db = libasynql::create($this, yaml_parse(file_get_contents($this->getDataFolder() . "database.yml")), $sqlMap, true);
 		return new DataBase($db);
 	}
 

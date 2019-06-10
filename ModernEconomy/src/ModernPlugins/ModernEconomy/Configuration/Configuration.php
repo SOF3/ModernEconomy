@@ -198,10 +198,10 @@ final class Configuration{
 
 	private function checkArray($array, string $method, string $key, bool $isList) : array{
 		if(!is_array($array)){
-			throw new ConfigurationException("\"$key\" should be a list, but we found a " . gettype($array) . ". See https://modernplugins.github.io/ModernEconomy/users/yaml#list-set for YAML format help.");
+			throw new ConfigurationException("\"$key\" should be a list, but we found a " . gettype($array) . ". See https://modernplugins.github.io/ModernEconomy/users/yaml#listset for YAML format help.");
 		}
 		if(!self::isLinearArray($array)){
-			throw new ConfigurationException("\"$key\" should be a list, but we found a mapping. See https://modernplugins.github.io/ModernEconomy/users/yaml#list-set for YAML format help.");
+			throw new ConfigurationException("\"$key\" should be a list, but we found a mapping. See https://modernplugins.github.io/ModernEconomy/users/yaml#listset for YAML format help.");
 		}
 
 		foreach($array as &$value){
