@@ -1,0 +1,7 @@
+type: mysql
+mysql:
+  host: "127.0.0.1"
+  username: "travis"
+  password: ""
+  schema: "me"
+worker-limit: 2

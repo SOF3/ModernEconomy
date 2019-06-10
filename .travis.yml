@@ -1,0 +1,55 @@
+language: bash
+dist: xenial
+
+addons:
+  apt:
+    update: true
+    packages:
+      - autoconf
+      - automake
+      - bison
+      - build-essential
+      - ca-certificates
+      - cmake
+      - curl
+      - libtool
+      - libtool-bin
+      - m4
+      - tar
+      - unzip
+
+services:
+  - mysql
+
+install:
+  - mysql -e "CREATE SCHEMA me;"
+  - cd $HOME
+  - git clone https://github.com/pmmp/php-build-scripts.git -b chunkutils2 php_build
+  - cd php_build
+  - ./compile.sh
+  - cd $HOME
+  - mv php_build/bin php_bin
+  - ln -s $HOME/php_bin/php7/bin/php ./php
+  - mkdir server
+  - git clone https://github.com/pmmp/PocketMine-MP.git -b log-prevoius-ex --recursive pm_src # TODO change branch after merge
+  - cd pm_src
+  - curl -o composer-setup.php https://getcomposer.org/installer
+  - ../php composer-setup.php
+  - rm composer-setup.php
+  - ../php composer.phar install
+  - ../php -r "foreach(scandir(\".\") as \$file) if(!in_array(\$file, explode(\",\",\".,..,src,vendor,resources\"))) exec(\"rm -rf \$file\");"
+  - find -type d -name .git | xargs rm -rf
+  - ../php -r "\$phar = new Phar(\"../server/PocketMine-MP.phar\");
+    \$phar->setStub(\"<?php require(\\\"phar://\\\" . __FILE__ . \\\"/src/pocketmine/PocketMine.php\\\"); __HALT_COMPILER();\");
+    \$phar->setSignatureAlgorithm(Phar::SHA1);
+    \$phar->buildFromDirectory(\".\");"
+  - cd $HOME/server
+  - mkdir plugins
+  - bash $TRAVIS_BUILD_DIR/travis/build-phar.sh $HOME/php $TRAVIS_BUILD_DIR/ModernEconomy plugins/ModernEconomy.phar $TRAVIS_BUILD_DIR/libs
+  - mkdir -p data/plugin_data/ModernEconomy
+  - cp $TRAVIS_BUILD_DIR/travis/database.yml data/plugin_data/ModernEconomy/database.yml
+
+script:
+  - cd $HOME/server &&
+    TERM=xterm $HOME/php PocketMine-MP.phar -no-wizard --enable-ansi -data=data --plugins=plugins --console.title-tick=false
+    < $TRAVIS_BUILD_DIR/travis/
