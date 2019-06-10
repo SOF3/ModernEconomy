@@ -145,7 +145,7 @@ final class Main extends PluginBase{
 		return new PrefixedLogger($this->getLogger(), $name);
 	}
 
-	protected function onDisable(){
+	protected function onDisable() : void{
 		if($this->db !== null){
 			Await::f2c(function(){
 				if($this->playerModule !== null){
