@@ -11,4 +11,3 @@
 player:
   # Whether to enable the player module.
   enabled: true
-
