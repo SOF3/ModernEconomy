@@ -1,3 +1,0 @@
----
-title: ModernEconomy User Guide
----

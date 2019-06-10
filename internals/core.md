@@ -1,5 +1,5 @@
 ---
-title: Core Module
+title: Internals/Core Module
 ---
 
 ## Master acquisition
