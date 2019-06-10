@@ -28,7 +28,7 @@ cache:
 install:
   - mysql -e "CREATE SCHEMA me;"
   - cd $HOME
-  - [[ ! -d php_build ]] && git clone https://github.com/pmmp/php-build-scripts.git -b chunkutils2 php_build
+  - "[[ ! -d php_build ]] && git clone https://github.com/pmmp/php-build-scripts.git -b chunkutils2 php_build"
   - cd php_build
   - ./compile.sh
   - cd $HOME
