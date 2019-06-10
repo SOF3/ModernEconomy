@@ -21,14 +21,18 @@ addons:
 services:
   - mysql
 
+cache:
+  directories:
+    - $HOME/php_build
+
 install:
   - mysql -e "CREATE SCHEMA me;"
   - cd $HOME
-  - git clone https://github.com/pmmp/php-build-scripts.git -b chunkutils2 php_build
+  - [[ ! -d php_build ]] && git clone https://github.com/pmmp/php-build-scripts.git -b chunkutils2 php_build
   - cd php_build
   - ./compile.sh
   - cd $HOME
-  - mv php_build/bin php_bin
+  - cp -r php_build/bin php_bin
   - ln -s $HOME/php_bin/php7/bin/php ./php
   - mkdir server
   - git clone https://github.com/pmmp/PocketMine-MP.git -b log-prevoius-ex --recursive pm_src # TODO change branch after merge
@@ -51,5 +55,5 @@ install:
 
 script:
   - cd $HOME/server &&
-    TERM=xterm $HOME/php PocketMine-MP.phar -no-wizard --enable-ansi -data=data --plugins=plugins --console.title-tick=false
+    TERM=xterm $HOME/php PocketMine-MP.phar --no-wizard --enable-ansi -data=data --plugins=plugins --console.title-tick=false
     < $TRAVIS_BUILD_DIR/travis/
