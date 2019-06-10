@@ -10,4 +10,5 @@
 !.idea/watcherTasks.xml
 !.idea/.name
 *.phar
-!libs/*
+!/libs/*
+/docs/_site
