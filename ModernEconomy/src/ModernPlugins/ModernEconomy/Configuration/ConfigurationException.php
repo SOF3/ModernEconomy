@@ -24,5 +24,7 @@ namespace ModernPlugins\ModernEconomy\Configuration;
 use ModernPlugins\ModernEconomy\UserFriendlyException;
 
 class ConfigurationException extends UserFriendlyException{
-
+	public function __construct(string $message){
+		parent::__construct("Error in shared.yml: $message");
+	}
 }

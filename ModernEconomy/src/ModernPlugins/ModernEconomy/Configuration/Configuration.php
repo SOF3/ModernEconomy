@@ -73,7 +73,7 @@ final class Configuration{
 	private function read(string $key){
 		$value = $this->config->getNested($key);
 		if($value === null){
-			throw new ConfigurationException("Error in shared.yml: Required attribute \"$key\" is missing");
+			throw new ConfigurationException("Required attribute \"$key\" is missing");
 		}
 		return $value;
 	}
@@ -152,14 +152,14 @@ final class Configuration{
 
 	private function toBool($value, string $key) : bool{
 		if(!is_bool($value)){
-			throw new ConfigurationException("Error in shared.yml: $key should be true or false, but a " . gettype($value) . " is found");
+			throw new ConfigurationException("\"$key\" should be true or false, but a " . gettype($value) . " is found");
 		}
 		return $value;
 	}
 
 	private function toInt($value, string $key) : int{
 		if(!is_int($value)){
-			throw new ConfigurationException("Error in shared.yml: $key should be an integer (without quotes), got " . gettype($value));
+			throw new ConfigurationException("\"$key\" should be an integer (without quotes), got " . gettype($value));
 		}
 		return $value;
 	}
@@ -169,10 +169,10 @@ final class Configuration{
 			return (float) $value;
 		}
 		if(!is_float($value)){
-			throw new ConfigurationException("Error in shared.yml: $key should be a number, got " . gettype($value));
+			throw new ConfigurationException("\"$key\" should be a number, got " . gettype($value));
 		}
 		if(!is_finite($value)){
-			throw new ConfigurationException("Error in shared.yml: Only finite and real values are allowed in \"$key\", got " . gettype($value));
+			throw new ConfigurationException("Only finite and real values are allowed in \"$key\", got " . gettype($value));
 		}
 		return $value;
 	}
@@ -188,20 +188,20 @@ final class Configuration{
 		}
 		if(is_bool($value)){
 			$possible = $value ? "y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON" : "n|N|no|No|NO|false|False|FALSE|off|Off|OFF";
-			throw new ConfigurationException("Error in shared.yml: \"$key\" should be text, but it is parsed as a boolean. We cannot distinguish if you typed $possible. Please add \"quotes\" around the value to disambiguate (and to hide this warning).");
+			throw new ConfigurationException("\"$key\" should be text, but it is parsed as a boolean. We cannot distinguish if you typed $possible. Please add \"quotes\" around the value to disambiguate (and to hide this warning).");
 		}
 		if(!is_string($value)){
-			throw new ConfigurationException("Error in shared.yml: \$key\" should be text, but it is parsed as an " . gettype($value) . ". Please add \"quotes\" around the value if it is intended to be text.");
+			throw new ConfigurationException("\$key\" should be text, but it is parsed as an " . gettype($value) . ". Please add \"quotes\" around the value if it is intended to be text.");
 		}
 		return $value;
 	}
 
 	private function checkArray($array, string $method, string $key, bool $isList) : array{
 		if(!is_array($array)){
-			throw new ConfigurationException("Error in shared.yml: \"$key\" should be a list, but we found a " . gettype($array) . ". See https://modernplugins.github.io/ModernEconomy/users/yaml#list-set for YAML format help.");
+			throw new ConfigurationException("\"$key\" should be a list, but we found a " . gettype($array) . ". See https://modernplugins.github.io/ModernEconomy/users/yaml#list-set for YAML format help.");
 		}
 		if(!self::isLinearArray($array)){
-			throw new ConfigurationException("Error in shared.yml: \"$key\" should be a list, but we found a mapping. See https://modernplugins.github.io/ModernEconomy/users/yaml#list-set for YAML format help.");
+			throw new ConfigurationException("\"$key\" should be a list, but we found a mapping. See https://modernplugins.github.io/ModernEconomy/users/yaml#list-set for YAML format help.");
 		}
 
 		foreach($array as &$value){
@@ -212,7 +212,7 @@ final class Configuration{
 		if(!$isList){
 			$dup = self::findDuplicates($array);
 			if($dup !== null){
-				throw new ConfigurationException("The ");
+				throw new ConfigurationException("\"$key\" should be a unique list, but item #$dup repeats a previous item");
 			}
 
 			sort($array);
