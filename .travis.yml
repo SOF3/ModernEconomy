@@ -55,5 +55,5 @@ install:
 
 script:
   - cd $HOME/server &&
-    TERM=xterm $HOME/php PocketMine-MP.phar --no-wizard --enable-ansi -data=data --plugins=plugins --console.title-tick=false
+    TERM=xterm $HOME/php PocketMine-MP.phar --no-wizard --enable-ansi -data=data --plugins=plugins --settings.enable-dev-builds=true --console.title-tick=false
     < $TRAVIS_BUILD_DIR/travis/
