@@ -21,11 +21,11 @@
 
 namespace ModernPlugins\ModernEconomy\Core\Operation;
 
-final class OperationType{
-	public const TYPE_CREATION = 0;
-	public const TYPE_DESTRUCTION = 1;
-	public const TYPE_TRANSACTION = 2;
-	public const TYPE_EXCHANGE = 3;
+final class OperationClass{
+	public const CREATION = 0;
+	public const DESTRUCTION = 1;
+	public const TRANSACTION = 2;
+	public const EXCHANGE = 3;
 
 	private function __construct(){
 	}

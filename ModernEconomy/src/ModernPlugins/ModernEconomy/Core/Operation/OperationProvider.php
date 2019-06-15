@@ -57,7 +57,7 @@ final class OperationProvider{
 			return null;
 		}
 
-		if($row["class"] !== OperationType::TYPE_CREATION){
+		if($row["class"] !== OperationClass::CREATION){
 			throw new InvalidArgumentException("The operation is not a creation");
 		}
 		$operation = new CreationOperation($this->db, $this->accountProvider, $row["id"], $row["time"], $row["type"],
@@ -73,7 +73,7 @@ final class OperationProvider{
 			return null;
 		}
 
-		if($row["class"] !== OperationType::TYPE_DESTRUCTION){
+		if($row["class"] !== OperationClass::DESTRUCTION){
 			throw new InvalidArgumentException("The operation is not a destruction");
 		}
 		$operation = new DestructionOperation($this->db, $this->accountProvider, $row["id"], $row["time"], $row["type"],
@@ -85,7 +85,7 @@ final class OperationProvider{
 		$rows = yield from $this->db->executeSelect(Queries::CORE_OPERATION_GET_MERGED, [
 			"id" => $id,
 		]);
-		if($rows[0]["class"] !== OperationType::TYPE_TRANSACTION){
+		if($rows[0]["class"] !== OperationClass::TRANSACTION){
 			throw new InvalidArgumentException("THe operation is not a transaction");
 		}
 
