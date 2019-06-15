@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Core;
+namespace ModernPlugins\ModernEconomy\Core\Currency;
 
 use function floor;
 use function implode;

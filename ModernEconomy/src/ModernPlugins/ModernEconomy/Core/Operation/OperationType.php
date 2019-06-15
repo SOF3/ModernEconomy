@@ -19,8 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Core;
+namespace ModernPlugins\ModernEconomy\Core\Operation;
 
-final class ExchangeOperation extends Operation{
+final class OperationType{
+	public const TYPE_CREATION = 0;
+	public const TYPE_DESTRUCTION = 1;
+	public const TYPE_TRANSACTION = 2;
+	public const TYPE_EXCHANGE = 3;
 
+	private function __construct(){
+	}
 }

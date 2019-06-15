@@ -19,29 +19,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Core;
+namespace ModernPlugins\ModernEconomy\Core\Operation;
 
-use Generator;
-use function assert;
+use ModernPlugins\ModernEconomy\Core\Account\AccountProvider;
+use ModernPlugins\ModernEconomy\Utils\DataBase;
 
-trait CreationDestructionOperationTrait{
-	/** @var int */
-	private $accountId;
-	/** @var Account */
-	private $account = null;
-	/** @var int */
-	private $amount;
+final class CreationOperation extends Operation{
+	use CreationDestructionOperationTrait;
 
-	public function getAccount() : Generator{
-		if($this->account === null){
-			$this->account = yield from $this->asOperation()->getAccountProvider()->getAccount($this->accountId);
-		}
-		return $this->account;
+	public function __construct(DataBase $db, AccountProvider $accountProvider, int $id, int $time, string $type, int $accountId, int $amount){
+		parent::__construct($db, $accountProvider, $id, $time, $type);
+		$this->accountId = $accountId;
+		$this->amount = $amount;
 	}
 
-	abstract protected function asOperation() : Operation;
-
-	public function getAmount() : int{
-		return $this->amount;
+	protected function asOperation() : Operation{
+		return $this;
 	}
 }

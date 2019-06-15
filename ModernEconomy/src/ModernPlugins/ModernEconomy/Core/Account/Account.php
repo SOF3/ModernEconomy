@@ -19,9 +19,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Core;
+namespace ModernPlugins\ModernEconomy\Core\Account;
 
 use Generator;
+use ModernPlugins\ModernEconomy\Core\Currency\Currency;
 use ModernPlugins\ModernEconomy\Generated\Queries;
 
 final class Account{

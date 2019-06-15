@@ -19,9 +19,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Core;
+namespace ModernPlugins\ModernEconomy\Core\Operation;
 
 use Generator;
+use ModernPlugins\ModernEconomy\Core\Account\Account;
+use ModernPlugins\ModernEconomy\Core\Account\AccountProvider;
 
 final class LazyAccount{
 	/** @var AccountProvider */

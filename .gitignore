@@ -9,6 +9,7 @@
 !.idea/php.xml
 !.idea/watcherTasks.xml
 !.idea/.name
+*.sw[a-z]
 *.phar
 !/libs/*
 /docs/_site

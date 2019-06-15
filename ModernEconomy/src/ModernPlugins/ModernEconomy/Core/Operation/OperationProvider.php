@@ -19,10 +19,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Core;
+namespace ModernPlugins\ModernEconomy\Core\Operation;
 
 use Generator;
 use InvalidArgumentException;
+use ModernPlugins\ModernEconomy\Core\Account\AccountProvider;
 use ModernPlugins\ModernEconomy\DataBaseMigration;
 use ModernPlugins\ModernEconomy\Generated\Queries;
 use ModernPlugins\ModernEconomy\Utils\DataBase;

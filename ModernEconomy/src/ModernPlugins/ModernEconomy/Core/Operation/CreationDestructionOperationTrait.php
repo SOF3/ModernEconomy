@@ -19,14 +19,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ModernPlugins\ModernEconomy\Core;
+namespace ModernPlugins\ModernEconomy\Core\Operation;
 
-final class OperationType{
-	public const TYPE_CREATION = 0;
-	public const TYPE_DESTRUCTION = 1;
-	public const TYPE_TRANSACTION = 2;
-	public const TYPE_EXCHANGE = 3;
+use Generator;
+use ModernPlugins\ModernEconomy\Core\Account\Account;
 
-	private function __construct(){
+trait CreationDestructionOperationTrait{
+	/** @var int */
+	private $accountId;
+	/** @var Account */
+	private $account = null;
+	/** @var int */
+	private $amount;
+
+	public function getAccount() : Generator{
+		if($this->account === null){
+			$this->account = yield from $this->asOperation()->getAccountProvider()->getAccount($this->accountId);
+		}
+		return $this->account;
+	}
+
+	abstract protected function asOperation() : Operation;
+
+	public function getAmount() : int{
+		return $this->amount;
 	}
 }
