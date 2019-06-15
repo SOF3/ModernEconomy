@@ -56,6 +56,6 @@ install:
 script:
   - cd $HOME/server && TERM=xterm $HOME/php PocketMine-MP.phar
     --no-wizard --data=data --plugins=plugins
-    --enable-ansi --console.title-tick=false
-    --settings.enable-dev-builds=true
+    --enable-ansi --console.title-tick=0
+    --settings.enable-dev-builds=1
     < $TRAVIS_BUILD_DIR/travis/test-commands.txt
