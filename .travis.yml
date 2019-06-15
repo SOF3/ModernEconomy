@@ -54,6 +54,8 @@ install:
   - cp $TRAVIS_BUILD_DIR/travis/database.yml data/plugin_data/ModernEconomy/database.yml
 
 script:
-  - cd $HOME/server/data &&
-    TERM=xterm $HOME/php PocketMine-MP.phar --no-wizard --enable-ansi --data=data --plugins=plugins --settings.enable-dev-builds=true --console.title-tick=false
+  - cd $HOME/server && TERM=xterm $HOME/php PocketMine-MP.phar
+    --no-wizard --data=data --plugins=plugins
+    --enable-ansi --console.title-tick=false
+    --settings.enable-dev-builds=true
     < $TRAVIS_BUILD_DIR/travis/
