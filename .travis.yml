@@ -58,4 +58,4 @@ script:
     --no-wizard --data=data --plugins=plugins
     --enable-ansi --console.title-tick=false
     --settings.enable-dev-builds=true
-    < $TRAVIS_BUILD_DIR/travis/
+    < $TRAVIS_BUILD_DIR/travis/test-commands.txt
