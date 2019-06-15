@@ -9,18 +9,19 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 namespace ModernPlugins\ModernEconomy\Core\Operation;
 
+use AssertionError;
 use Generator;
 use InvalidArgumentException;
 use ModernPlugins\ModernEconomy\Core\Account\AccountProvider;
@@ -100,6 +101,28 @@ final class OperationProvider{
 
 		return new TransactionOperation($this->db, $this->accountProvider,
 			$id, $rows[0]["time"], $rows[0]["type"], $source["account"], $target["account"], $target["diff"]);
+	}
+
+	public function getExchange(int $id) : Generator{
+		$rows = yield from $this->db->executeSelect(Queries::CORE_OPERATION_GET_MERGED, [
+			"id" => $id,
+		]);
+		if($rows[0]["class"] !== OperationClass::EXCHANGE){
+			throw new InvalidArgumentException("THe operation is not a transaction");
+		}
+
+		assert(count($rows) === 2);
+
+		if($rows[0]["diff"] > 0 && $rows[1]["diff"] < 0){
+			[$source, $target] = [$rows[1], $rows[0]];
+		}elseif($rows[0]["diff"] < 0 && $rows[1]["diff"] > 0){
+			[$source, $target] = [$rows[0], $rows[1]];
+		}else{
+			throw new AssertionError("Diff signs should be opposite");
+		}
+
+		return new ExchangeOperation($this->db, $this->accountProvider, $id, $rows[0]["time"], $rows[0]["type"],
+			$source["account"], -$source["diff"], $target["account"], $target["diff"]);
 	}
 
 	private function __construct(){
