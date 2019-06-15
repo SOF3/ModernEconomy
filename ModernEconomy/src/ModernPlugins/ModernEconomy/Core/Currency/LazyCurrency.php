@@ -31,10 +31,9 @@ final class LazyCurrency{
 	/** @var Currency|null */
 	private $instance = null;
 
-	public function __construct(CurrencyProvider $currencyProvider, int $id, ?Currency $instance){
+	public function __construct(CurrencyProvider $currencyProvider, int $id){
 		$this->currencyProvider = $currencyProvider;
 		$this->id = $id;
-		$this->instance = $instance;
 	}
 
 	public function getId() : int{
@@ -42,7 +41,7 @@ final class LazyCurrency{
 	}
 
 	public function getInstance() : Generator{
-		if($this->instance===null){
+		if($this->instance === null){
 			$this->instance = yield from $this->currencyProvider->getCurrency($this->id);
 		}
 		return $this->instance;

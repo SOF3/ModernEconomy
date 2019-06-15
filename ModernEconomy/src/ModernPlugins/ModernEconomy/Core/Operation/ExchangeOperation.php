@@ -40,7 +40,7 @@ final class ExchangeOperation extends Operation{
 		parent::__construct($db, $accountProvider, $id, $time, $type);
 		$this->source = new LazyAccount($accountProvider, $sourceId);
 		$this->sourceDecrease = $sourceDecrease;
-		$this->target = new LazyAccount($accountProvider,$targetId);
+		$this->target = new LazyAccount($accountProvider, $targetId);
 		$this->targetIncrease = $targetIncrease;
 	}
 

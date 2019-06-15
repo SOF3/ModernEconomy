@@ -9,12 +9,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -22,7 +22,7 @@
 namespace ModernPlugins\ModernEconomy\Core\Account;
 
 use Generator;
-use ModernPlugins\ModernEconomy\Core\Currency\Currency;
+use ModernPlugins\ModernEconomy\Core\Currency\LazyCurrency;
 use ModernPlugins\ModernEconomy\Generated\Queries;
 
 final class Account{
@@ -37,9 +37,7 @@ final class Account{
 	private $ownerName;
 	/** @var string */
 	private $accountType;
-	/** @var int */
-	private $currencyId;
-	/** @var Currency */
+	/** @var LazyCurrency */
 	private $currency;
 	/** @var int */
 	private $balance;
@@ -68,7 +66,7 @@ final class Account{
 		$this->ownerType = $ownerType;
 		$this->ownerName = $ownerName;
 		$this->accountType = $accountType;
-		$this->currencyId = $currencyId;
+		$this->currency = new LazyCurrency($accountProvider->getCurrencyProvider(), $currencyId);
 		$this->balance = $balance;
 		$this->lastAccessBeforeSelect = $lastAccessBeforeSelect;
 	}
@@ -100,10 +98,7 @@ final class Account{
 	}
 
 	public function getCurrency() : Generator{
-		if($this->currency === null){
-			$this->currency = yield from $this->accountProvider->getCurrencyProvider()->getCurrency($this->currencyId);
-		}
-		return $this->currency;
+		return yield from $this->currency->getInstance();
 	}
 
 	public function getBalance() : int{
