@@ -12,4 +12,3 @@
 *.sw[a-z]
 *.phar
 !/libs/*
-/docs/_site
