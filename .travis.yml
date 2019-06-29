@@ -35,7 +35,7 @@ install:
   - cp -r php_build/bin php_bin
   - ln -s $HOME/php_bin/php7/bin/php ./php
   - mkdir server
-  - git clone https://github.com/pmmp/PocketMine-MP.git -b log-prevoius-ex --recursive pm_src # TODO change branch after merge
+  - git clone https://github.com/pmmp/PocketMine-MP.git -b log-prevoius-ex --recursive pm_src # "prevoius" is an acknowledged typo # TODO change branch after log-prevoius-ex is merged
   - cd pm_src
   - curl -o composer-setup.php https://getcomposer.org/installer
   - ../php composer-setup.php

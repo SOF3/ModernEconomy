@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/ModernEcon/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ModernEconomy/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/docs/_site" />
+      <excludeFolder url="file://$MODULE_DIR$/tools" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

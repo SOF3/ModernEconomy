@@ -9,12 +9,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -24,7 +24,9 @@ namespace ModernPlugins\ModernEconomy\Core;
 use Generator;
 use Logger;
 use ModernPlugins\ModernEconomy\Configuration\Configuration;
+use ModernPlugins\ModernEconomy\Core\Account\AccountOwnerTypeRegistry;
 use ModernPlugins\ModernEconomy\Core\Account\AccountProvider;
+use ModernPlugins\ModernEconomy\Core\Account\AccountTypeRegistry;
 use ModernPlugins\ModernEconomy\Core\Currency\CurrencyProvider;
 use ModernPlugins\ModernEconomy\Core\Operation\OperationProvider;
 use ModernPlugins\ModernEconomy\DataBaseMigration;
@@ -44,6 +46,10 @@ final class CoreModule{
 
 	/** @var CurrencyProvider */
 	private $currencyProvider;
+	/** @var AccountOwnerTypeRegistry */
+	private $accountOwnerTypeRegistry;
+	/** @var AccountTypeRegistry */
+	private $accountTypeRegistry;
 	/** @var AccountProvider */
 	private $accountProvider;
 	/** @var OperationProvider */
@@ -57,6 +63,8 @@ final class CoreModule{
 		$module->configuration = $configuration;
 
 		$module->currencyProvider = yield from CurrencyProvider::create($db, $masterManager, $migration);
+		$module->accountOwnerTypeRegistry = new AccountOwnerTypeRegistry();
+		$module->accountTypeRegistry = new AccountTypeRegistry();
 		$module->accountProvider = yield from AccountProvider::create($db, $module->currencyProvider, $migration);
 		$module->operationProvider = yield from OperationProvider::create($db, $module->accountProvider, $migration);
 
@@ -65,6 +73,14 @@ final class CoreModule{
 
 	public function getCurrencyProvider() : CurrencyProvider{
 		return $this->currencyProvider;
+	}
+
+	public function getAccountOwnerTypeRegistry() : AccountOwnerTypeRegistry{
+		return $this->accountOwnerTypeRegistry;
+	}
+
+	public function getAccountTypeRegistry() : AccountTypeRegistry{
+		return $this->accountTypeRegistry;
 	}
 
 	public function getAccountProvider() : AccountProvider{
