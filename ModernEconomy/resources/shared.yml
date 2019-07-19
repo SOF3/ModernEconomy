@@ -11,3 +11,5 @@
 player:
   # Whether to enable the player module.
   enabled: true
+  # The amount of cash to give to each new player
+  initial-balance: 100

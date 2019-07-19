@@ -24,6 +24,7 @@ namespace ModernPlugins\ModernEconomy\Core\Operation;
 use AssertionError;
 use Generator;
 use InvalidArgumentException;
+use ModernPlugins\ModernEconomy\Core\Account\Account;
 use ModernPlugins\ModernEconomy\Core\Account\AccountProvider;
 use ModernPlugins\ModernEconomy\DataBaseMigration;
 use ModernPlugins\ModernEconomy\Generated\Queries;
@@ -123,6 +124,10 @@ final class OperationProvider{
 
 		return new ExchangeOperation($this->db, $this->accountProvider, $id, $rows[0]["time"], $rows[0]["type"],
 			$source["account"], -$source["diff"], $target["account"], $target["diff"]);
+	}
+
+	public function addCreation(Account $account, int $amount, string $type) : Generator{
+		// TODO implement
 	}
 
 	private function __construct(){

@@ -29,7 +29,7 @@ final class AccountOwnerTypeRegistry{
 		$this->registry[$type->getId()] = $type;
 	}
 
-	public function getId(string $id) : ?AccountOwnerType{
+	public function getById(string $id) : ?AccountOwnerType{
 		return $this->registry[$id] ?? null;
 	}
 

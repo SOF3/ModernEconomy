@@ -20,6 +20,16 @@ SELECT id, ownerType, ownerName, accountType, currency, balance, UNIX_TIMESTAMP(
 FROM modernecon_account
 WHERE id = :id;
 -- #    }
+-- #    { list
+-- #        { by-owned-type
+-- #            :ownerType string
+-- #            :ownerName string
+-- #            :accountType string
+SELECT id, currency, balance, UNIX_TIMESTAMP(lastAccess)
+FROM modernecon_account
+WHERE ownerType = :ownerType AND ownerName = :ownerName AND accountType = :accountType;
+-- #        }
+-- #    }
 -- #    { set
 -- #        { owner
 -- #            :id int
@@ -27,5 +37,13 @@ WHERE id = :id;
 -- #            :ownerName string
 UPDATE modernecon_account SET ownerType = :ownerType, ownerName = :ownerName WHERE id = :id;
 -- #        }
+-- #    }
+-- #    { new
+-- #        :ownerType string
+-- #        :ownerName string
+-- #        :accountType string
+-- #        :currency int
+INSERT INTO modernecon_account (ownerType, ownerName, accountType, currency, balance, lastAccess)
+VALUES (:ownerType, :ownerName, :accountType, :currency, 0, CURRENT_TIMESTAMP(3));
 -- #    }
 -- #}

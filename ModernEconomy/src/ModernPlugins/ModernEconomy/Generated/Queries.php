@@ -27,7 +27,30 @@ final class Queries{
 
 	/**
 	 * <h4>Declared in:</h4>
-	 * - resources/core/account.mysql.sql:29
+	 * - resources/core/account.mysql.sql:31
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:accountType</code> string, required in account.mysql.sql
+	 * - <code>:ownerType</code> string, required in account.mysql.sql
+	 * - <code>:ownerName</code> string, required in account.mysql.sql
+	 */
+	public const CORE_ACCOUNT_LIST_BY_OWNED_TYPE = "core.account.list.by-owned-type";
+
+	/**
+	 * <h4>Declared in:</h4>
+	 * - resources/core/account.mysql.sql:48
+	 *
+	 * <h3>Variables</h3>
+	 * - <code>:accountType</code> string, required in account.mysql.sql
+	 * - <code>:ownerType</code> string, required in account.mysql.sql
+	 * - <code>:ownerName</code> string, required in account.mysql.sql
+	 * - <code>:currency</code> int, required in account.mysql.sql
+	 */
+	public const CORE_ACCOUNT_NEW = "core.account.new";
+
+	/**
+	 * <h4>Declared in:</h4>
+	 * - resources/core/account.mysql.sql:39
 	 *
 	 * <h3>Variables</h3>
 	 * - <code>:ownerName</code> string, required in account.mysql.sql

@@ -33,6 +33,8 @@ use ModernPlugins\ModernEconomy\Utils\DataBase;
 use pocketmine\plugin\Plugin;
 
 final class PlayerModule{
+	public const INITIAL_BALANCE_CREATION = "moderneconomy.player.initial-balance";
+
 	/** @var Plugin */
 	private $plugin;
 	/** @var Logger */
@@ -49,12 +51,14 @@ final class PlayerModule{
 
 		if($migration !== null){
 			if($migration->getFromVersion() <= DataBaseMigration::EMPTY_MIGRATE_VERSION){
-
+				// nothing to init in db yet
 			}
 		}
 
-		$coreModule->getAccountOwnerTypeRegistry()->register(new AccountOwnerType("moderneconomy.player.player", new HardUString("Player")));
-		$coreModule->getAccountTypeRegistry()->register(new AccountType("moderneconomy.player.cash", new HardUString("Cash")));
+		$playerType = new AccountOwnerType("moderneconomy.player.player", new HardUString("Player"));
+		$coreModule->getAccountOwnerTypeRegistry()->register($playerType);
+		$cashType = new AccountType("moderneconomy.player.cash", new HardUString("Cash"));
+		$coreModule->getAccountTypeRegistry()->register($cashType);
 
 		$module = new PlayerModule;
 		$module->plugin = $plugin;
@@ -62,6 +66,8 @@ final class PlayerModule{
 		$module->db = $db;
 		$module->configuration = $configuration;
 		$module->coreModule = $coreModule;
+		$module->plugin->getServer()->getPluginManager()->registerEvents(new PlayerJoinQuitListener($configuration,
+			$coreModule->getAccountProvider(), $coreModule->getOperationProvider(), $playerType, $cashType), $plugin);
 		return $module;
 	}
 
